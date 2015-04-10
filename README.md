@@ -36,7 +36,5 @@ Run the app in debug mode:
 
     $ python rfmembers.py runserver -d
 
-Open http://localhost:5000/
-
-
+Open <http://localhost:5000/>
 
