@@ -2,7 +2,7 @@
 
 ## Setup
 
-Install Python, then install pip and virtualenv:
+Install Python 2, then install pip and virtualenv:
 
     $ sudo easy_install pip
     $ sudo pip install virtualenv
