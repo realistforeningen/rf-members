@@ -7,8 +7,10 @@ Install Python 2, then install pip and virtualenv:
     $ sudo easy_install pip
     $ sudo pip install virtualenv
 
-Next setup a separate directory for our dependencies:
+Next clone the repo, and set up virtualenv for this project:
 
+    $ git clone git@github.com:realistforeningen/rf-members.git
+    $ cd rf-members/
     $ virtualenv env
 
 Whenever you want to work on this project you should run:
