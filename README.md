@@ -17,7 +17,7 @@ Whenever you want to work on this project you should run:
 
 After that you can install dependencies using:
 
-    $ python pip install -r requirements.txt
+    $ pip install -r requirements.txt
 
 ## Database
 
