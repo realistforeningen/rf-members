@@ -4,9 +4,13 @@ from flask.ext.script import Manager
 
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.migrate import Migrate, MigrateCommand
+from flask.ext.assets import Environment, Bundle
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['ASSETS_DEBUG'] = True # TODO: set this to false in production
+
+assets = Environment(app)
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)

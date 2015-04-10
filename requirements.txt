@@ -6,3 +6,6 @@ SQLAlchemy == 0.9.9
 
 # Migration framework
 Flask-Migrate
+
+# Asset management
+Flask-Assets
