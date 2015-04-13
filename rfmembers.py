@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from datetime import datetime
+from flask import Flask, render_template, request
 
 from flask.ext.script import Manager
 
@@ -15,8 +16,12 @@ assets = Environment(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-class Member(db.Model):
+class Membership(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text, nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+    term = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
 @app.route('/')
 def index():
