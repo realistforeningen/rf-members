@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 
 from flask.ext.script import Manager
 
@@ -30,6 +30,18 @@ def index():
 @app.route('/memberships/new')
 def memberships_new():
     return render_template('memberships/new.html')
+
+@app.route('/memberships/new', methods=['POST'])
+def memberships_create():
+    membership = Membership(name=request.form["name"], price=request.form["price"], term="V15")
+    db.session.add(membership)
+    db.session.commit()
+    return redirect(url_for('memberships_list'))
+
+@app.route('/memberships')
+def memberships_list():
+    memberships = Membership.query.all()
+    return render_template('memberships/list.html', memberships=memberships)
 
 if __name__ == '__main__':
     manager = Manager(app)

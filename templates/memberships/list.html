@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="form-group">
+  <table class="table table-striped">
+    <caption>List of memberships</caption>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Term</th>
+        <th>Price (NOK)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for membership in memberships %}
+      <tr>
+          <td>{{membership.id}}</td>
+          <td>{{membership.name}}</td>
+          <td>{{membership.term}}</td>
+          <td>{{membership.price}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
