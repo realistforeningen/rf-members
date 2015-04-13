@@ -22,6 +22,10 @@ class Member(db.Model):
 def index():
     return render_template('index.html')
 
+@app.route('/memberships/new')
+def memberships_new():
+    return render_template('memberships/new.html')
+
 if __name__ == '__main__':
     manager = Manager(app)
     manager.add_command('db', MigrateCommand)
