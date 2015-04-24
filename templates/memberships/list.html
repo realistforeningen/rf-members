@@ -1,5 +1,18 @@
 {% extends "layout.html" %}
 {% block body %}
+<form action="{{url_for('memberships_new')}}" method="GET">
+    <!-- Example of a comment -->
+  <div class="form-group">
+    <label for="membershipSearch">Name</label>
+    <input type="text" class="form-control" id="membershipSearch" name="name">
+    <button type="reset" class="close" id="resetTextField">
+      <span>&times;</span>
+    </button>
+  </div>
+  <div class="form-group">
+      <button type="submit" class="btn btn-primary btn-lg active">Add new membership</button>
+  </div>
+</form>
 <div class="form-group">
   <table class="table table-striped">
     <caption>List of memberships</caption>

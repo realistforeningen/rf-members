@@ -3,3 +3,11 @@
     width:800px;
 }
 
+#membershipSearch {
+    padding-right: 40px;
+}
+
+#resetTextField {
+    margin-top:-27px;
+    margin-right:10px;
+}
