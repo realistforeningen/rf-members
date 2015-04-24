@@ -3,11 +3,22 @@
 <form action="{{url_for('memberships_create')}}" method="POST">
   <div class="form-group">
     <label for="membershipName">Name of member</label>
-    <input type="text" class="form-control" id="membershipName" name="name" value="{{membership_name}}">
+    <input type="text" class="form-control" id="membershipName" name="name" value="{{membership.name}}">
   </div>
   <div class="form-group">
-    <label for="membershipPrice">Paid price (NOK)</label>
-    <input type="number" class="form-control" value="50" id="membershipPrice" name="price">
+    <label for="membershipPrice">Payment</label>
+    <div class="radio">
+        <label>
+            <input type="radio" name="price" id="optionsRadio1" value="standard" {{ 'checked' if not membership.is_free() }}>
+          50 (NOK)
+        </label>
+    </div>
+    <div class="radio">
+        <label>
+            <input type="radio" name="price" id="optionsRadio1" value="free" {{ 'checked' if membership.is_free() }}>
+          Redeemed (wrist bands, etc)
+        </label>
+    </div>
   </div>
   <div class="form-group">
     <label>Term</label>

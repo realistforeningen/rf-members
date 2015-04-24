@@ -23,18 +23,30 @@ class Membership(db.Model):
     term = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
+    def is_free(self):
+        return self.price == 0
+
+def parse_price(text):
+    if text == 'free':
+        return 0
+    else:
+        return 50
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
 @app.route('/memberships/new')
 def memberships_new():
-    membership_name = request.args.get('name', '')
-    return render_template('memberships/new.html', membership_name=membership_name)
+    membership = Membership(name=request.args.get('name', ''))
+    return render_template('memberships/new.html', membership=membership)
 
 @app.route('/memberships/new', methods=['POST'])
 def memberships_create():
-    membership = Membership(name=request.form["name"], price=request.form["price"], term="V15")
+    membership = Membership(name=request.form["name"], price=parse_price(request.form["price"]), term="V15")
+    if membership.name.strip() == '':
+        return render_template('memberships/new.html', membership=membership)
+
     db.session.add(membership)
     db.session.commit()
     return redirect(url_for('memberships_list'))
