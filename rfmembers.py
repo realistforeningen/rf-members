@@ -29,7 +29,8 @@ def index():
 
 @app.route('/memberships/new')
 def memberships_new():
-    return render_template('memberships/new.html')
+    membership_name = request.args.get('name', '')
+    return render_template('memberships/new.html', membership_name=membership_name)
 
 @app.route('/memberships/new', methods=['POST'])
 def memberships_create():
