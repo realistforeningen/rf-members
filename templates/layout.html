@@ -32,8 +32,11 @@
             <li{% if active_page == "index" %} class="active"{% endif %}>
               <a href="/">Home</a>
             </li>
-            <li{% if active_page == "memberships" %} class="active"{% endif %}>
-              <a href="{{ url_for('memberships_new')}}">Memberships</a>
+            <li{% if active_page == "add" %} class="active"{% endif %}>
+              <a href="{{ url_for('memberships_new')}}">Add</a>
+            </li>
+            <li{% if active_page == "list" %} class="active"{% endif %}>
+              <a href="{{url_for('memberships_list')}}">List</a>
             </li>
             <li{% if active_page == "diff" %} class="active"{% endif %}>
               <a href="{{ url_for('memberships_diff')}}">Diff</a>
