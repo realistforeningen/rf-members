@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% set active_page = "diff" %}
 {% block body %}
 <form action="{{url_for('memberships_diff')}}" method="POST">
   <div class="form-group">
