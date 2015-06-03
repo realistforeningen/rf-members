@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block body %}
+<form action="{{url_for('memberships_diff')}}" method="POST">
+  <div class="form-group">
+    <input type="text" class="form-control" id="fromDate" name="fromDate"
+      placeholder="{{from_date.strftime('%H:%M:%S %d-%m-%Y')}}">
+  </div>
+  <button type="submit" class="btn btn-primary btn-lg active">Submit</button>
+  <a href="{{url_for('memberships_list')}}" class="btn btn-default btn-lg active">Back</a>
+</form>
+<br />
+<div class="form-group">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Term</th>
+        <th>Price (NOK)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for membership in memberships_added %}
+      <tr>
+          <td>{{membership.id}}</td>
+          <td>{{membership.name}}</td>
+          <td>{{membership.term}}</td>
+          <td>{{membership.price}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p>Sum: <strong>{{cost}} NOK</strong>.</p>
+<p>Changes since <strong>{{from_date.strftime('%H:%M:%S %d-%m-%Y')}}</strong>.</p>
+{% endblock %}
