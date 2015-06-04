@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, url_for
 
 from flask.ext.script import Manager
@@ -50,6 +50,34 @@ def memberships_create():
     db.session.add(membership)
     db.session.commit()
     return redirect(url_for('memberships_list'))
+
+@app.route('/memberships/diff')
+def memberships_diff():
+    # Default is a week backwards
+    from_date = datetime.utcnow() - timedelta(days=7)
+
+    memberships_added = Membership.query.filter(Membership.created_at >
+            from_date).all()
+    cost = sum([membership.price for membership in memberships_added])
+
+    return render_template('memberships/diff.html',
+            memberships_added=memberships_added, from_date=from_date, cost=cost)
+
+@app.route('/memberships/diff', methods=['POST'])
+def memberships_diff_formdate():
+    # New date from form
+    try:
+        from_date = datetime.strptime(request.form["fromDate"],
+                '%H:%M:%S %d-%m-%Y')
+    except Exception, e:
+        return memberships_diff()
+
+    memberships_added = Membership.query.filter(Membership.created_at >
+            from_date).all()
+    cost = sum([membership.price for membership in memberships_added])
+
+    return render_template('memberships/diff.html',
+            memberships_added=memberships_added, from_date=from_date, cost=cost)
 
 @app.route('/memberships')
 def memberships_list():
