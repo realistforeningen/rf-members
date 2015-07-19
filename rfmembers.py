@@ -74,6 +74,10 @@ def memberships_create():
 @app.route('/memberships/diff')
 @auth.login_required
 def memberships_diff():
+    # Only admins allowed to view
+    if auth.username() == "funk":
+        return redirect(url_for('not_permitted'))
+
     # Default is a week backwards
     from_date = datetime.utcnow() - timedelta(days=7)
 
@@ -88,6 +92,10 @@ def memberships_diff():
 @app.route('/memberships/diff', methods=['POST'])
 @auth.login_required
 def memberships_diff_formdate():
+    # Only admins allowed to view
+    if auth.username() == "funk":
+        return redirect(url_for('not_permitted'))
+
     # New date from form
     try:
         from_date = datetime.strptime(request.form["fromDate"],
@@ -102,6 +110,10 @@ def memberships_diff_formdate():
     return render_template('memberships/diff.html',
             memberships_added=memberships_added, from_date=from_date, cost=cost,
             username=auth.username())
+
+@app.route('/not_permitted')
+def not_permitted():
+    return render_template('not_permitted.html')
 
 @app.route('/memberships')
 @auth.login_required
