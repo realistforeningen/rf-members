@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 from flask.ext.script import Manager
 from flask.ext.httpauth import HTTPDigestAuth
@@ -103,6 +103,12 @@ def memberships_diff_formdate():
 def memberships_list():
     memberships = Membership.query.all()
     return render_template('memberships/list.html', memberships=memberships)
+
+@app.route('/api/names', methods=['GET'])
+def api_names():
+    member_names = [m.name for m in Membership.query.all()]
+    data = { "member_names" : member_names }
+    return jsonify(**data)
 
 if __name__ == '__main__':
     manager = Manager(app)
