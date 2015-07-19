@@ -51,7 +51,7 @@ def parse_price(text):
 @app.route('/')
 @auth.login_required
 def index():
-    return render_template('index.html', username=auth.username())
+    return redirect(url_for('memberships_new'))
 
 @app.route('/memberships/new')
 @auth.login_required
@@ -133,4 +133,3 @@ if __name__ == '__main__':
     manager = Manager(app)
     manager.add_command('db', MigrateCommand)
     manager.run()
-

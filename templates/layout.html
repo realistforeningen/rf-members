@@ -29,9 +29,6 @@
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-            <li{% if active_page == "index" %} class="active"{% endif %}>
-              <a href="/">Home</a>
-            </li>
             <li{% if active_page == "add" %} class="active"{% endif %}>
               <a href="{{ url_for('memberships_new')}}">Add</a>
             </li>
