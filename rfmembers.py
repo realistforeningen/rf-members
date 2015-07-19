@@ -105,6 +105,7 @@ def memberships_list():
     return render_template('memberships/list.html', memberships=memberships)
 
 @app.route('/api/names', methods=['GET'])
+@auth.login_required
 def api_names():
     member_names = [m.name for m in Membership.query.all()]
     data = { "member_names" : member_names }
