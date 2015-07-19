@@ -34,7 +34,7 @@ def parse_price(text):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return redirect(url_for('memberships_new'))
 
 @app.route('/memberships/new')
 def memberships_new():
