@@ -11,7 +11,7 @@ from flask.ext.assets import Environment, Bundle
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['ASSETS_DEBUG'] = True # TODO: set this to false in production
-app.config['SECRET_KEY'] = 'this_is_the_secret_key_change_it_before_prod' # TODO
+app.config['SECRET_KEY'] = 'some_secret_key' # TODO Change before prod.
 
 auth = HTTPDigestAuth()
 
