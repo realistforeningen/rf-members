@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, url_for
 
 from flask.ext.script import Manager
+from flask.ext.httpauth import HTTPDigestAuth
 
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.migrate import Migrate, MigrateCommand
@@ -10,6 +11,19 @@ from flask.ext.assets import Environment, Bundle
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['ASSETS_DEBUG'] = True # TODO: set this to false in production
+app.config['SECRET_KEY'] = 'this_is_the_secret_key_change_it_before_prod' # TODO
+
+auth = HTTPDigestAuth()
+
+users = {
+    "admin" : "password"
+}
+
+@auth.get_password
+def get_pw(username):
+    if username in users:
+        return users.get(username)
+    return None
 
 assets = Environment(app)
 
@@ -33,15 +47,18 @@ def parse_price(text):
         return 50
 
 @app.route('/')
+@auth.login_required
 def index():
     return render_template('index.html')
 
 @app.route('/memberships/new')
+@auth.login_required
 def memberships_new():
     membership = Membership(name=request.args.get('name', ''))
     return render_template('memberships/new.html', membership=membership)
 
 @app.route('/memberships/new', methods=['POST'])
+@auth.login_required
 def memberships_create():
     membership = Membership(name=request.form["name"], price=parse_price(request.form["price"]), term="V15")
     if membership.name.strip() == '':
@@ -52,6 +69,7 @@ def memberships_create():
     return redirect(url_for('memberships_list'))
 
 @app.route('/memberships/diff')
+@auth.login_required
 def memberships_diff():
     # Default is a week backwards
     from_date = datetime.utcnow() - timedelta(days=7)
@@ -64,6 +82,7 @@ def memberships_diff():
             memberships_added=memberships_added, from_date=from_date, cost=cost)
 
 @app.route('/memberships/diff', methods=['POST'])
+@auth.login_required
 def memberships_diff_formdate():
     # New date from form
     try:
@@ -80,6 +99,7 @@ def memberships_diff_formdate():
             memberships_added=memberships_added, from_date=from_date, cost=cost)
 
 @app.route('/memberships')
+@auth.login_required
 def memberships_list():
     memberships = Membership.query.all()
     return render_template('memberships/list.html', memberships=memberships)
