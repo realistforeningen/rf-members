@@ -1,6 +1,15 @@
 {% extends "layout.html" %}
 {% set active_page = "add" %}
 {% block body %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-{{ category }}" role="alert">
+  <p>{{ message }}</p>
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
 <form action="{{url_for('memberships_create')}}" method="POST">
   <div class="form-group">
     <label for="membershipName">Name of member</label>

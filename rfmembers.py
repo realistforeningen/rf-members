@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import flash
 
 from flask.ext.script import Manager
 
@@ -10,6 +11,7 @@ from flask.ext.assets import Environment, Bundle
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['ASSETS_DEBUG'] = True # TODO: set this to false in production
+app.config['SECRET_KEY'] = 'this is a secret passphrase'
 
 assets = Environment(app)
 
@@ -49,7 +51,11 @@ def memberships_create():
 
     db.session.add(membership)
     db.session.commit()
-    return redirect(url_for('memberships_list'))
+
+    flash("OK, '%s' added and paid %s." % (request.form["name"],
+        request.form["price"]), "success")
+
+    return redirect(url_for('memberships_new'))
 
 @app.route('/memberships/diff')
 def memberships_diff():
