@@ -38,9 +38,11 @@
             <li{% if active_page == "list" %} class="active"{% endif %}>
               <a href="{{url_for('memberships_list')}}">List</a>
             </li>
+            {% if username != 'funk' %}
             <li{% if active_page == "diff" %} class="active"{% endif %}>
               <a href="{{ url_for('memberships_diff')}}">Diff</a>
             </li>
+            {% endif %}
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="http://log:in@localhost:5000/">Logg inn igjen</a></li>

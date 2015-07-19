@@ -51,13 +51,14 @@ def parse_price(text):
 @app.route('/')
 @auth.login_required
 def index():
-    return render_template('index.html')
+    return render_template('index.html', username=auth.username())
 
 @app.route('/memberships/new')
 @auth.login_required
 def memberships_new():
     membership = Membership(name=request.args.get('name', ''))
-    return render_template('memberships/new.html', membership=membership)
+    return render_template('memberships/new.html', membership=membership,
+            username=auth.username())
 
 @app.route('/memberships/new', methods=['POST'])
 @auth.login_required
@@ -81,7 +82,8 @@ def memberships_diff():
     cost = sum([membership.price for membership in memberships_added])
 
     return render_template('memberships/diff.html',
-            memberships_added=memberships_added, from_date=from_date, cost=cost)
+            memberships_added=memberships_added, from_date=from_date, cost=cost,
+            username=auth.username())
 
 @app.route('/memberships/diff', methods=['POST'])
 @auth.login_required
@@ -98,13 +100,15 @@ def memberships_diff_formdate():
     cost = sum([membership.price for membership in memberships_added])
 
     return render_template('memberships/diff.html',
-            memberships_added=memberships_added, from_date=from_date, cost=cost)
+            memberships_added=memberships_added, from_date=from_date, cost=cost,
+            username=auth.username())
 
 @app.route('/memberships')
 @auth.login_required
 def memberships_list():
     memberships = Membership.query.all()
-    return render_template('memberships/list.html', memberships=memberships)
+    return render_template('memberships/list.html', username=auth.username(),
+            memberships=memberships)
 
 @app.route('/api/names', methods=['GET'])
 @auth.login_required
