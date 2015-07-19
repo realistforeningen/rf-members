@@ -43,4 +43,12 @@
     <h2>Existing members</h2>
     <ul id="existingMembersList"></ul>
 </div>
+<div id="recentlyAddedMembers">
+  <h2>Recently added</h2>
+  <ul>
+    {% for member in recently_added %}
+      <li><strong>{{ member.name }}</strong> {{ member.created_at }}</li>
+    {% endfor %}
+  </ul>
+</div>
 {% endblock %}

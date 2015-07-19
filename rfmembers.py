@@ -41,7 +41,12 @@ def index():
 @app.route('/memberships/new')
 def memberships_new():
     membership = Membership(name=request.args.get('name', ''))
-    return render_template('memberships/new.html', membership=membership)
+
+    recently_added =\
+        Membership.query.order_by(Membership.created_at.desc()).limit(5).all()
+
+    return render_template('memberships/new.html', membership=membership,
+            recently_added=recently_added)
 
 @app.route('/memberships/new', methods=['POST'])
 def memberships_create():
