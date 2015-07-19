@@ -16,7 +16,9 @@ app.config['SECRET_KEY'] = 'some_secret_key' # TODO Change before prod.
 auth = HTTPDigestAuth()
 
 users = {
-    "admin" : "password"
+    "admin" : "password", # For us devs
+    "funk" : "password", # "Funker", can only register
+    "mester" : "password" # Can do most everything
 }
 
 @auth.get_password
