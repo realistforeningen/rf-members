@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% set active_page = "add" %}
 {% block body %}
+<div class="rf-form">
 <form action="{{url_for('memberships_create')}}" method="POST">
   <div class="form-group">
     <label for="membershipName">Name of member</label>
@@ -30,6 +31,7 @@
   <button type="submit" class="btn btn-primary btn-lg active">Submit</button>
   <a href="{{url_for('memberships_list')}}" class="btn btn-default btn-lg active">Back</a>
 </form>
+</div>
 <div>
   <h2 id="memberships-search-header">Last memberships</h2>
   <div id="memberships-search-container">
