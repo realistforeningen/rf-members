@@ -132,8 +132,9 @@ def sessions_destroy():
 @app.route('/memberships/new')
 @requires('memberships_new')
 def memberships_new():
+    last_memberships = Membership.query.order_by(db.desc('created_at')).limit(10)
     membership = Membership(name=request.args.get('name', ''))
-    return render_template('memberships/new.html', membership=membership)
+    return render_template('memberships/new.html', membership=membership, last_memberships=last_memberships)
 
 @app.route('/memberships/new', methods=['POST'])
 @requires('memberships_new')

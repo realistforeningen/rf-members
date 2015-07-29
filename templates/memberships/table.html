@@ -1,0 +1,24 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Term</th>
+      <th>Price (NOK)</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for membership in memberships %}
+    <tr>
+      <td>{{ membership.id }}</td>
+      <td>{{ membership.name }}</td>
+      <td>{{ membership.term }}</td>
+      <td>{{ membership.price }}</td>
+      <td></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+

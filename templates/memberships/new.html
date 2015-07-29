@@ -30,8 +30,12 @@
   <button type="submit" class="btn btn-primary btn-lg active">Submit</button>
   <a href="{{url_for('memberships_list')}}" class="btn btn-default btn-lg active">Back</a>
 </form>
-<div id="existingMembers">
-    <h2>Existing members</h2>
-    <ul id="existingMembersList"></ul>
+<div>
+  <h2>Last memberships</h2>
+  <div id="memberships-table">
+    {% with memberships=last_memberships%}
+      {% include "memberships/table.html" %}
+    {% endwith %}
+  </div>
 </div>
 {% endblock %}
