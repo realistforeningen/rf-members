@@ -150,7 +150,7 @@ def memberships_create():
 
     db.session.add(membership)
     db.session.commit()
-    return redirect(url_for('memberships_list'))
+    return redirect(url_for('memberships_new'))
 
 @app.route('/memberships/diff')
 def memberships_diff():
