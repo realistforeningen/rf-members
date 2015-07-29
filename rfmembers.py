@@ -210,6 +210,29 @@ def memberships_search():
     memberships = query.order_by(db.desc('created_at')).limit(10)
     return render_template('memberships/table.html', memberships=memberships)
 
+@app.route('/memberships/settle')
+@requires('settlement')
+def memberships_settle():
+    max_id = db.session.query(db.func.max(Membership.id)).scalar()
+
+    sessions = db.session.query(
+        db.func.count(Membership.created_by),
+        db.func.sum(Membership.price),
+        Session
+    ) \
+        .group_by(Membership.created_by) \
+        .filter(Membership.price > 0) \
+        .filter(Membership.settled_by == None) \
+        .filter(Membership.id <= max_id) \
+        .join(Membership.created_session)
+
+    summary = {
+        'count': sum(count for count,_,_ in sessions),
+        'price': sum(price for _,price,_ in sessions),
+    }
+
+    return render_template('memberships/settle.html', sessions=sessions, summary=summary)
+
 @app.route('/memberships/diff')
 def memberships_diff():
     # Default is a week backwards

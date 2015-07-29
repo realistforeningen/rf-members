@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block body %}
+<h2>Settlement</h2>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Description</td>
+      <th># of memberships</td>
+      <th>NOK</td>
+    </tr>
+  </thead>
+  <tbody>
+  {% for count, price, session in sessions %}
+    <tr>
+      <td>
+        {{ session.description }}
+        <span class="text-muted">
+          &nbsp;&nbsp;
+          {{ localize(session.created_at).strftime('%Y-%m-%d %H:%M') }}
+        </span>
+      </td>
+      <td> {{ count }} </td>
+      <td> {{ price }} </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <th>Total</th>
+      <th>{{ summary.count }}</th>
+      <th>{{ summary.price }}</th>
+    </tr>
+  </tfoot>
+</table>
+{% endblock %}
+
