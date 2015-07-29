@@ -152,6 +152,16 @@ def memberships_create():
     db.session.commit()
     return redirect(url_for('memberships_new'))
 
+@app.route('/memberships/search')
+def memberships_search():
+    query_string = request.args['q']
+    query = Membership.query
+    for part in query_string.split():
+        like_string = '%' + part + '%'
+        query = query.filter(Membership.name.like(like_string))
+    memberships = query.limit(10)
+    return render_template('memberships/table.html', memberships=memberships)
+
 @app.route('/memberships/diff')
 def memberships_diff():
     # Default is a week backwards
@@ -185,12 +195,6 @@ def memberships_diff_formdate():
 def memberships_list():
     memberships = Membership.query.all()
     return render_template('memberships/list.html', memberships=memberships)
-
-@app.route('/api/names', methods=['GET'])
-def api_names():
-    member_names = [m.name for m in Membership.query.all()]
-    data = { "member_names" : member_names }
-    return jsonify(**data)
 
 if __name__ == '__main__':
     manager = Manager(app)

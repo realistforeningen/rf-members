@@ -31,8 +31,8 @@
   <a href="{{url_for('memberships_list')}}" class="btn btn-default btn-lg active">Back</a>
 </form>
 <div>
-  <h2>Last memberships</h2>
-  <div id="memberships-table">
+  <h2 id="memberships-search-header">Last memberships</h2>
+  <div id="memberships-search-container">
     {% with memberships=last_memberships%}
       {% include "memberships/table.html" %}
     {% endwith %}
