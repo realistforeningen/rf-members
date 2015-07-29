@@ -18,6 +18,8 @@ assets = Environment(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+CURRENT_TERM = 'H15'
+
 def compute_queryname(context):
     return context.current_parameters['name'].lower()
 
@@ -34,6 +36,8 @@ class Membership(db.Model):
 
     created_session = db.relationship("Session", foreign_keys=[created_by], backref="created_memberships")
     settled_session = db.relationship("Session", foreign_keys=[settled_by], backref="settled_memberships")
+
+    valid_term = (term == "Lifetime") | (term == CURRENT_TERM)
 
     def is_free(self):
         return self.price == 0
@@ -136,7 +140,7 @@ def sessions_destroy():
 @app.route('/memberships/new')
 @requires('memberships_new')
 def memberships_new():
-    last_memberships = Membership.query.order_by(db.desc('created_at')).limit(10)
+    last_memberships = Membership.query.filter(Membership.valid_term).order_by(db.desc('created_at')).limit(10)
     membership = Membership(name=request.args.get('name', ''))
     return render_template('memberships/new.html', membership=membership, last_memberships=last_memberships)
 
@@ -146,7 +150,7 @@ def memberships_create():
     membership = Membership(
         name=request.form["name"],
         price=parse_price(request.form["price"]),
-        term="V15", # TODO: Don't hard-code right here
+        term=CURRENT_TERM, # TODO: Don't hard-code right here
         created_by=g.sess.id
     )
     if membership.name.strip() == '':
@@ -159,7 +163,7 @@ def memberships_create():
 @app.route('/memberships/search')
 def memberships_search():
     query_string = request.args['q']
-    query = Membership.query
+    query = Membership.query.filter(Membership.valid_term)
     for part in query_string.split():
         like_string = '%' + part.lower() + '%'
         query = query.filter(Membership.queryname.like(like_string))
