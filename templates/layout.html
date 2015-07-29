@@ -27,7 +27,7 @@
       </div>
 
       {% if g.sess %}
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="">
         <ul class="nav navbar-nav">
           {% if g.sess.can('memberships_new') %}
             <li{% if active_page == "add" %} class="active"{% endif %}>
@@ -51,15 +51,15 @@
           {% endif %}
         </ul>
         {% if g.sess %}
-        <form method="post" action="{{ url_for('sessions_destroy') }}" class="navbar-form navbar-right">
-          <button class="btn">Log out</button>
+        <form method="post" action="{{ url_for('sessions_destroy') }}" class="navbar-form navbar-right navbar-extra">
+          <p>
+            <strong>
+              {{ g.sess.level }}
+              - {{ g.sess.description }}
+            </strong>
+          </p>
+          <button class="btn btn-success">Log out</button>
         </form>
-        <p class="navbar-right navbar-text">
-          Logged in as: <strong>
-            {{ g.sess.level }}
-            - {{ g.sess.description }}
-          </strong>
-        </p>
         {% endif %}
       </div><!-- /.navbar-collapse -->
       {% endif %}
