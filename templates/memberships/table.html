@@ -18,6 +18,11 @@
       <td>{{ membership.price }}</td>
       <td></td>
     </tr>
+  {% else %}
+    <tr>
+      <td></td>
+      <td colspan="4"><em>(nothing)</em></td>
+    </tr>
   {% endfor %}
   </tbody>
 </table>
