@@ -18,9 +18,13 @@ assets = Environment(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+def compute_queryname(context):
+    return context.current_parameters['name'].lower()
+
 class Membership(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
+    queryname = db.Column(db.Text, nullable=False, default=compute_queryname, onupdate=compute_queryname)
     price = db.Column(db.Integer, nullable=False)
     term = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
@@ -157,8 +161,8 @@ def memberships_search():
     query_string = request.args['q']
     query = Membership.query
     for part in query_string.split():
-        like_string = '%' + part + '%'
-        query = query.filter(Membership.name.like(like_string))
+        like_string = '%' + part.lower() + '%'
+        query = query.filter(Membership.queryname.like(like_string))
     memberships = query.limit(10)
     return render_template('memberships/table.html', memberships=memberships)
 
