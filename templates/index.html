@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<h2>What do you want to do today?</h2>
+<p>
+  <a href="{{ url_for('sessions_new', level='Funk', description='Friday pub') }}" class="btn btn-default">Friday pub</a>
+  <a href="{{ url_for('sessions_new', level='SM', description='Settlement') }}" class="btn btn-default">Settlement</a>
+  <a href="{{ url_for('sessions_new', level='Funk', description='Redeem') }}" class="btn btn-default">Redeem membership</a>
+  <a href="{{ url_for('sessions_new', level='Admin', description='Silver') }}" class="btn btn-default">Silver membership</a>
+  <a href="{{ url_for('sessions_new', level='Admin', description='Admin') }}" class="btn btn-default">Admin</a>
+</p>
+{% endblock %}
+

@@ -26,26 +26,48 @@
         <a class="navbar-brand" href="/">RF members</a>
       </div>
 
-      <!-- Collect the nav links, forms, and other content for toggling -->
+      {% if g.sess %}
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
+          {% if g.sess.can('memberships_new') %}
             <li{% if active_page == "add" %} class="active"{% endif %}>
-              <a href="{{ url_for('memberships_new')}}">Add</a>
+              <a href="{{ url_for('memberships_new')}}">Add member</a>
             </li>
+          {% endif %}
+          {% if g.sess.can('memberships_list') %}
             <li{% if active_page == "list" %} class="active"{% endif %}>
               <a href="{{url_for('memberships_list')}}">List</a>
             </li>
-            <li{% if active_page == "diff" %} class="active"{% endif %}>
-              <a href="{{ url_for('memberships_diff')}}">Diff</a>
+          {% endif %}
+          {% if g.sess.can('settlement') %}
+            <li{% if active_page == "settle" %} class="active"{% endif %}>
+              <a href="#">Settlement</a>
             </li>
+          {% endif %}
+          {% if g.sess.can('sessions_list') %}
+            <li{% if active_page == "settle" %} class="active"{% endif %}>
+              <a href="#">Sessions</a>
+            </li>
+          {% endif %}
         </ul>
+        {% if g.sess %}
+        <form method="post" action="{{ url_for('sessions_destroy') }}" class="navbar-form navbar-right">
+          <button class="btn">Log out</button>
+        </form>
+        <p class="navbar-right navbar-text">
+          Logged in as: <strong>
+            {{ g.sess.level }}
+            - {{ g.sess.description }}
+          </strong>
+        </p>
+        {% endif %}
       </div><!-- /.navbar-collapse -->
+      {% endif %}
     </div><!-- /.container-fluid -->
   </nav>
 
   <div class="container rf-main">
     <div class="row">
-      <h1>RF members</h1>
       {% block body %}{% endblock %}
     </div>
   </div>
