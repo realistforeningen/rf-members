@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+from pytz import timezone
+import pytz
 from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, g, abort
 
@@ -12,6 +14,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['ASSETS_DEBUG'] = True # TODO: set this to false in production
 app.secret_key = "very secret"
+
+tz = timezone('Europe/Oslo')
 
 assets = Environment(app)
 
@@ -94,6 +98,13 @@ def before_request():
     else:
         setattr(g, 'sess', None)
 
+@app.context_processor
+def inject_tz():
+    def localize(d):
+        if d.tzinfo is None:
+            d = d.replace(tzinfo=pytz.utc)
+        return d.astimezone(tz)
+    return dict(localize=localize)
 
 def logout():
     session.pop('session_id')
