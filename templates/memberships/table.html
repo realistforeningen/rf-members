@@ -16,7 +16,15 @@
       <td>{{ membership.name }}</td>
       <td>{{ membership.term }}</td>
       <td>{{ membership.price }}</td>
-      <td></td>
+      <td>
+        {% if g.sess.can('delete', membership) %}
+        <form method="post" action="{{ url_for('memberships_destroy', id=membership.id) }}" onsubmit="return confirm('Are you sure you want to delete this membership?')">
+            <button class="btn btn-xs btn-link" title="Delete">
+              <i class="glyphicon glyphicon-trash"></i>
+            </button>
+          </form>
+        {% endif %}
+      </td>
     </tr>
   {% else %}
     <tr>

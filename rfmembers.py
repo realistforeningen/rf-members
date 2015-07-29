@@ -55,7 +55,7 @@ class Session(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     closed_at = db.Column(db.DateTime, nullable=True)
 
-    def can(self, action):
+    def can(self, action, thing=None):
         if self.level == 'Admin':
             return True
 
@@ -67,6 +67,11 @@ class Session(db.Model):
 
         if action == 'memberships_new':
             return True
+
+        if action == 'delete':
+            # We can only delete our own memberships
+            if isinstance(thing, Membership):
+                return thing.created_by == self.id
 
         return False
 
@@ -92,9 +97,9 @@ def logout():
 def requires(action):
     def decorator(func):
         @wraps(func)
-        def route():
+        def route(*args, **kwargs):
             if g.sess and g.sess.can(action):
-                return func()
+                return func(*args, **kwargs)
             else:
                 abort(404)
         return route
@@ -158,6 +163,15 @@ def memberships_create():
 
     db.session.add(membership)
     db.session.commit()
+    return redirect(url_for('memberships_new'))
+
+@app.route('/memberships/<id>/delete', methods=['POST'])
+@requires('memberships_new')
+def memberships_destroy(id):
+    mem = Membership.query.get(id)
+    if g.sess.can('delete', mem):
+        db.session.delete(mem)
+        db.session.commit()
     return redirect(url_for('memberships_new'))
 
 @app.route('/memberships/search')
