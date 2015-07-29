@@ -68,6 +68,10 @@ class Session(db.Model):
         if action == 'memberships_new':
             return True
 
+        if action == 'memberships_new_lifetime':
+            # Only for admins
+            return False
+
         if action == 'delete':
             # We can only delete our own memberships
             if isinstance(thing, Membership):
@@ -146,7 +150,7 @@ def sessions_destroy():
 @requires('memberships_new')
 def memberships_new():
     last_memberships = Membership.query.filter(Membership.valid_term).order_by(db.desc('created_at')).limit(10)
-    membership = Membership(name=request.args.get('name', ''))
+    membership = Membership(term=CURRENT_TERM)
     return render_template('memberships/new.html', membership=membership, last_memberships=last_memberships)
 
 @app.route('/memberships/new', methods=['POST'])
@@ -155,11 +159,22 @@ def memberships_create():
     membership = Membership(
         name=request.form["name"],
         price=parse_price(request.form["price"]),
-        term=CURRENT_TERM, # TODO: Don't hard-code right here
+        term=request.form["term"],
         created_by=g.sess.id
     )
+
+    errors = []
     if membership.name.strip() == '':
-        return render_template('memberships/new.html', membership=membership)
+        errors.append("Name is required")
+
+    if membership.term == 'Lifetime' and membership.price != 0:
+        errors.append("Lifetime membership must have redeemed payment")
+
+    if membership.term == 'Lifetime' and not g.sess.can('memberships_new_lifetime'):
+        errors.append("You don't have access to add lifetime membership")
+
+    if len(errors) > 0:
+        return render_template('memberships/new.html', membership=membership, errors=errors)
 
     db.session.add(membership)
     db.session.commit()
