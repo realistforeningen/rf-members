@@ -163,7 +163,7 @@ def memberships_search():
     for part in query_string.split():
         like_string = '%' + part.lower() + '%'
         query = query.filter(Membership.queryname.like(like_string))
-    memberships = query.limit(10)
+    memberships = query.order_by(db.desc('created_at')).limit(10)
     return render_template('memberships/table.html', memberships=memberships)
 
 @app.route('/memberships/diff')
