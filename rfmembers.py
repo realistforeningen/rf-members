@@ -102,6 +102,9 @@ class Session(db.Model):
 def before_request():
     if 'session_id' in session:
         sess = Session.query.get(session['session_id'])
+        # Closed sessions are not valid
+        if sess.closed_at is not None:
+            sess = None
         setattr(g, 'sess', sess)
     else:
         setattr(g, 'sess', None)
