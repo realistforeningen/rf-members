@@ -82,9 +82,10 @@ class Session(db.Model):
             return self.is_atleast('Admin')
 
         if action == 'delete':
-            # We can only delete our own memberships
+            # We can only delete our own memberships which are not settled
             if isinstance(thing, Membership):
-                return thing.created_by == self.id
+                if thing.settled_by is None:
+                    return thing.created_by == self.id
 
         return False
 
