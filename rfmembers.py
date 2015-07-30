@@ -67,6 +67,10 @@ class Session(db.Model):
         if action == 'settlement':
             return self.level == 'SM'
 
+        if action == 'settlement_all':
+            # Only Admin
+            return False
+
         if action == 'memberships_list':
             return self.level == 'SM'
 
@@ -219,23 +223,49 @@ def memberships_search():
 def memberships_settle():
     max_id = db.session.query(db.func.max(Membership.id)).scalar()
 
+    if g.sess.can('settlement_all'):
+        account = request.args.get('account', 'Entrance')
+    else:
+        account = "Entrance"
+
     sessions = db.session.query(
         db.func.count(Membership.created_by),
         db.func.sum(Membership.price),
         Session
     ) \
         .group_by(Membership.created_by) \
-        .filter(Membership.price > 0) \
+        .filter(Membership.account == account) \
         .filter(Membership.settled_by == None) \
         .filter(Membership.id <= max_id) \
-        .join(Membership.created_session)
+        .join(Membership.created_session) \
+        .all()
 
     summary = {
         'count': sum(count for count,_,_ in sessions),
         'price': sum(price for _,price,_ in sessions),
     }
 
-    return render_template('memberships/settle.html', sessions=sessions, summary=summary)
+    return render_template('memberships/settle.html', sessions=sessions, summary=summary, max_id=max_id, account=account)
+
+@app.route('/memberships/settle', methods=['POST'])
+@requires('settlement')
+def memberships_settle_submit():
+    max_id = request.form["max_id"]
+    if g.sess.can('settlement_all'):
+        account = request.form['account']
+    else:
+        account = "Entrance"
+
+    update = db.update(Membership) \
+        .where(Membership.account == account) \
+        .where(Membership.settled_by == None) \
+        .where(Membership.id <= max_id) \
+        .values(settled_by=g.sess.id) \
+        .values(queryname=Membership.queryname)
+
+    db.session.execute(update)
+    db.session.commit()
+    return redirect(url_for('memberships_settle'))
 
 @app.route('/memberships/diff')
 def memberships_diff():

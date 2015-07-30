@@ -41,7 +41,7 @@
           {% endif %}
           {% if g.sess.can('settlement') %}
             <li{% if active_page == "settle" %} class="active"{% endif %}>
-              <a href="#">Settlement</a>
+              <a href="{{ url_for('memberships_settle') }}">Settlement</a>
             </li>
           {% endif %}
           {% if g.sess.can('sessions_list') %}

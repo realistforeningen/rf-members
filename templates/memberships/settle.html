@@ -1,6 +1,14 @@
 {% extends "layout.html" %}
 {% block body %}
-<h2>Settlement</h2>
+<ul class="nav nav-tabs">
+  <li {{ 'class="active"'|safe if account == "Entrance" }}><a href="?account=Entrance">Entrance</a></li>
+  {% if g.sess.can('settlement_all') %}
+  <li {{ 'class="active"'|safe if account == "Wristband" }}><a href="?account=Wristband">Wristband</a></li>
+  <li {{ 'class="active"'|safe if account == "Lifetime" }}><a href="?account=Lifetime">Lifetime</a></li>
+  {% endif %}
+</ul>
+
+<h2>Settlement for {{ account }}</h2>
 <table class="table table-striped">
   <thead>
     <tr>
@@ -28,9 +36,22 @@
     <tr>
       <th>Total</th>
       <th>{{ summary.count }}</th>
-      <th>{{ summary.price }}</th>
+      <th><span style="font-size:2em">{{ summary.price }}</span></th>
     </tr>
   </tfoot>
 </table>
+{% if summary.price == 0 %}
+<div class="alert alert-success">
+  <p>Nothing to settle!</p>
+</div>
+{% else %}
+<form method="post">
+  <div class="alert alert-warning">
+    <p>Only proceed <em>after</em> you've counted the money and written the settlement form.</p>
+  </div>
+  <input type="hidden" name="max_id" value="{{ max_id }}">
+  <button class="btn btn-primary">I've finished the settlement form</button>
+</form>
+{% endif %}
 {% endblock %}
 
