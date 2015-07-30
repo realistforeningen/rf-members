@@ -33,6 +33,7 @@ class Membership(db.Model):
     queryname = db.Column(db.Text, nullable=False, default=compute_queryname, onupdate=compute_queryname)
     price = db.Column(db.Integer, nullable=False)
     term = db.Column(db.Text, nullable=False)
+    account = db.Column(db.Text, nullable=False) # Entrance/Wristband/Lifetime/Unknown
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     created_by = db.Column(db.Integer, db.ForeignKey('session.id'), nullable=False)
@@ -46,9 +47,9 @@ class Membership(db.Model):
     def is_free(self):
         return self.price == 0
 
-def parse_price(text):
-    if text == 'free':
-        return 0
+def price_for_term(term):
+    if term == 'Lifetime':
+        return 50 * 10
     else:
         return 50
 
@@ -161,7 +162,9 @@ def sessions_destroy():
 @requires('memberships_new')
 def memberships_new():
     last_memberships = Membership.query.filter(Membership.valid_term).order_by(db.desc('created_at')).limit(10)
-    membership = Membership(term=CURRENT_TERM)
+    term = request.args.get('term', CURRENT_TERM)
+    membership = Membership(term=term, account="Entrance")
+    membership.price = price_for_term(membership.term)
     return render_template('memberships/new.html', membership=membership, last_memberships=last_memberships)
 
 @app.route('/memberships/new', methods=['POST'])
@@ -169,17 +172,18 @@ def memberships_new():
 def memberships_create():
     membership = Membership(
         name=request.form["name"],
-        price=parse_price(request.form["price"]),
         term=request.form["term"],
+        account=request.form["account"],
         created_by=g.sess.id
     )
+    membership.price = price_for_term(membership.term)
+
+    if membership.term == "Lifetime":
+        membership.account = "Lifetime"
 
     errors = []
     if membership.name.strip() == '':
         errors.append("Name is required")
-
-    if membership.term == 'Lifetime' and membership.price != 0:
-        errors.append("Lifetime membership must have redeemed payment")
 
     if membership.term == 'Lifetime' and not g.sess.can('memberships_new_lifetime'):
         errors.append("You don't have access to add lifetime membership")

@@ -27,6 +27,7 @@ for row in rows:
         name=row['first_name'] + u' ' + row['last_name'],
         term=term,
         price=row['paid'],
+        account="Unknown",
         created_by=sess.id,
         settled_by=sess.id,
         created_at=timestamp,

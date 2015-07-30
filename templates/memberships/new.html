@@ -11,37 +11,40 @@
       </ul>
     </div>
   {% endif %}
+
+  <ul class="nav nav-tabs">
+    <li {{ 'class="active"'|safe if membership.term == "H15" }}><a href="?term=H15">H15</a></li>
+    {% if g.sess.can('memberships_new_lifetime') %}
+    <li {{ 'class="active"'|safe if membership.term == "Lifetime" }}><a href="?term=Lifetime">Lifetime</a></li>
+    {% endif %}
+  </ul>
 <form action="{{url_for('memberships_create')}}" method="POST">
+  <input type="hidden" name="term" value="{{ membership.term }}">
   <div class="form-group">
     <label for="membershipName">Name of member</label>
     <input type="text" class="form-control" id="membershipName" name="name" value="{{membership.name or ''}}">
   </div>
   <div class="form-group">
     <label for="membershipPrice">Payment</label>
-    <div class="radio">
-        <label>
-            <input type="radio" name="price" id="optionsRadio1" value="standard" {{ 'checked' if not membership.is_free() }}>
-          50 (NOK)
-        </label>
-    </div>
-    <div class="radio">
-        <label>
-            <input type="radio" name="price" id="optionsRadio1" value="free" {{ 'checked' if membership.is_free() }}>
-          Redeemed (wrist bands, etc)
-        </label>
-    </div>
+    <p style="font-size:2em"><strong>{{ membership.price }} NOK</strong></p>
   </div>
   <div class="form-group">
-    <label>Term</label>
+    <label for="membershipAccount">Account</label>
+    {% if membership.term == "Lifetime" %}
     <div class="radio">
       <label>
-        <input type="radio" name="term" value="H15" {{ 'checked' if membership.term == 'H15' }}> H15
+        <input type="radio" name="account" value="Lifetime" checked> Lifetime
       </label>
     </div>
-    {% if g.sess.can('memberships_new_lifetime') %}
+    {% else %}
     <div class="radio">
       <label>
-        <input type="radio" name="term" value="Lifetime" {{ 'checked' if membership.term == 'Lifetime' }}> Lifetime
+        <input type="radio" name="account" value="Entrance" {{ 'checked' if membership.account == "Entrance" }}> Entrance
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+        <input type="radio" name="account" value="Wristband" {{ 'checked' if membership.account == "Wristband" }}> Wristband (already paid)
       </label>
     </div>
     {% endif %}
