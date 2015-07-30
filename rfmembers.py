@@ -198,7 +198,7 @@ def memberships_create():
 
     db.session.add(membership)
     db.session.commit()
-    return redirect(url_for('memberships_new'))
+    return redirect(url_for('memberships_new', term=membership.term))
 
 @app.route('/memberships/<id>/delete', methods=['POST'])
 @requires('memberships_new')
@@ -266,7 +266,7 @@ def memberships_settle_submit():
 
     db.session.execute(update)
     db.session.commit()
-    return redirect(url_for('memberships_settle'))
+    return redirect(url_for('memberships_settle', account=account))
 
 @app.route('/memberships')
 @requires('memberships_list')
