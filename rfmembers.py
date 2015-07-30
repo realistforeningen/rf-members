@@ -53,6 +53,8 @@ def price_for_term(term):
     else:
         return 50
 
+levels = ['Funk', 'SM', 'Admin', 'Superadmin']
+
 class Session(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.Text, nullable=False)
@@ -60,26 +62,24 @@ class Session(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     closed_at = db.Column(db.DateTime, nullable=True)
 
+    def is_atleast(self, level):
+        return levels.index(self.level) >= levels.index(level)
+
     def can(self, action, thing=None):
-        if self.level == 'Admin':
+        if self.level == 'Superadmin':
             return True
 
         if action == 'settlement':
-            return self.level == 'SM'
+            return self.is_atleast('SM')
 
         if action == 'settlement_all':
-            # Only Admin
-            return False
-
-        if action == 'memberships_list':
-            return self.level == 'SM'
+            return self.is_atleast('Admin')
 
         if action == 'memberships_new':
             return True
 
         if action == 'memberships_new_lifetime':
-            # Only for admins
-            return False
+            return self.is_atleast('Admin')
 
         if action == 'delete':
             # We can only delete our own memberships
@@ -93,6 +93,7 @@ PASSWORDS = {
     'Funk': 'funk',
     'SM': 'sm',
     'Admin': 'admin',
+    'Superadmin': 'superadmin',
 }
 
 @app.before_request
