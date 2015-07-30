@@ -3,3 +3,4 @@
 /app.db
 /static/assets
 .webassets-cache
+/production.cfg

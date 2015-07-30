@@ -12,17 +12,26 @@ from flask.ext.assets import Environment, Bundle
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
-app.config['ASSETS_DEBUG'] = True # TODO: set this to false in production
-app.secret_key = "very secret"
+app.config['ASSETS_DEBUG'] = True
+app.config['SECRET_KEY'] = "development key"
+app.config['TIMEZONE'] = 'Europe/Oslo'
+app.config['TERM'] = "H15"
+app.config['PRICE'] = 50
+app.config['PASSWORDS'] = {
+    'Funk': 'funk',
+    'SM': 'sm',
+    'Admin': 'admin',
+    'Superadmin': 'superadmin',
+}
 
-tz = timezone('Europe/Oslo')
+app.config.from_pyfile('production.cfg', silent=True)
+
+tz = timezone(app.config['TIMEZONE'])
 
 assets = Environment(app)
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-
-CURRENT_TERM = 'H15'
 
 def compute_queryname(context):
     return context.current_parameters['name'].lower()
@@ -42,16 +51,16 @@ class Membership(db.Model):
     created_session = db.relationship("Session", foreign_keys=[created_by], backref="created_memberships")
     settled_session = db.relationship("Session", foreign_keys=[settled_by], backref="settled_memberships")
 
-    valid_term = (term == "Lifetime") | (term == CURRENT_TERM)
+    valid_term = (term == "Lifetime") | (term == app.config['TERM'])
 
     def is_free(self):
         return self.price == 0
 
 def price_for_term(term):
     if term == 'Lifetime':
-        return 50 * 10
+        return app.config['PRICE'] * 10
     else:
-        return 50
+        return app.config['PRICE']
 
 levels = ['Funk', 'SM', 'Admin', 'Superadmin']
 
@@ -88,14 +97,6 @@ class Session(db.Model):
                     return thing.created_by == self.id
 
         return False
-
-# TODO: Move these out to a config-file
-PASSWORDS = {
-    'Funk': 'funk',
-    'SM': 'sm',
-    'Admin': 'admin',
-    'Superadmin': 'superadmin',
-}
 
 @app.before_request
 def before_request():
@@ -143,7 +144,7 @@ def sessions_new():
 @app.route('/sessions/new', methods=['POST'])
 def sessions_create():
     level = request.form["level"]
-    real_password = PASSWORDS[request.form["level"]]
+    real_password = app.config['PASSWORDS'][request.form["level"]]
 
     if real_password != request.form["password"]:
         # TODO: Show error
@@ -168,7 +169,7 @@ def sessions_destroy():
 @requires('memberships_new')
 def memberships_new():
     last_memberships = Membership.query.filter(Membership.valid_term).order_by(db.desc('created_at')).limit(10)
-    term = request.args.get('term', CURRENT_TERM)
+    term = request.args.get('term', app.config['TERM'])
     membership = Membership(term=term, account="Entrance")
     membership.price = price_for_term(membership.term)
     return render_template('memberships/new.html', membership=membership, last_memberships=last_memberships)

@@ -13,7 +13,7 @@
   {% endif %}
 
   <ul class="nav nav-tabs">
-    <li {{ 'class="active"'|safe if membership.term == "H15" }}><a href="?term=H15">H15</a></li>
+    <li {{ 'class="active"'|safe if membership.term == config.TERM }}><a href="?term={{config.TERM}}">{{config.TERM}}</a></li>
     {% if g.sess.can('memberships_new_lifetime') %}
     <li {{ 'class="active"'|safe if membership.term == "Lifetime" }}><a href="?term=Lifetime">Lifetime</a></li>
     {% endif %}
