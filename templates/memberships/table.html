@@ -1,0 +1,42 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Term</th>
+      <th>Price (NOK)</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for membership in memberships %}
+    <tr>
+      <td>{{ membership.id }}</td>
+      <td>{{ membership.name }}</td>
+      <td>{{ membership.term }}</td>
+      <td>
+        {{ membership.price }}
+        {% if membership.account != "Lifetime" %}
+        - {{ membership.account }}
+        {% endif %}
+      </td>
+      <td>
+        {% if g.sess.can('delete', membership) %}
+        <form method="post" action="{{ url_for('memberships_destroy', id=membership.id) }}" onsubmit="return confirm('Are you sure you want to delete this membership?')">
+            <button class="btn btn-xs btn-link" title="Delete">
+              <i class="glyphicon glyphicon-trash"></i>
+            </button>
+          </form>
+        {% endif %}
+      </td>
+    </tr>
+  {% else %}
+    <tr>
+      <td></td>
+      <td colspan="4"><em>(nothing)</em></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+

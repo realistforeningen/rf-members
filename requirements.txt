@@ -9,3 +9,6 @@ Flask-Migrate
 
 # Asset management
 Flask-Assets
+
+# Timezones
+pytz

@@ -1,37 +1,63 @@
 {% extends "layout.html" %}
 {% set active_page = "add" %}
 {% block body %}
+<div class="rf-form">
+  {% if errors %}
+    <div class="alert alert-danger">
+      <ul>
+        {% for error in errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <ul class="nav nav-tabs">
+    <li {{ 'class="active"'|safe if membership.term == config.TERM }}><a href="?term={{config.TERM}}">{{config.TERM}}</a></li>
+    {% if g.sess.can('memberships_new_lifetime') %}
+    <li {{ 'class="active"'|safe if membership.term == "Lifetime" }}><a href="?term=Lifetime">Lifetime</a></li>
+    {% endif %}
+  </ul>
 <form action="{{url_for('memberships_create')}}" method="POST">
+  <input type="hidden" name="term" value="{{ membership.term }}">
   <div class="form-group">
     <label for="membershipName">Name of member</label>
-    <input type="text" class="form-control" id="membershipName" name="name" value="{{membership.name}}">
+    <input type="text" class="form-control" id="membershipName" name="name" value="{{membership.name or ''}}" autofocus>
   </div>
   <div class="form-group">
     <label for="membershipPrice">Payment</label>
-    <div class="radio">
-        <label>
-            <input type="radio" name="price" id="optionsRadio1" value="standard" {{ 'checked' if not membership.is_free() }}>
-          50 (NOK)
-        </label>
-    </div>
-    <div class="radio">
-        <label>
-            <input type="radio" name="price" id="optionsRadio1" value="free" {{ 'checked' if membership.is_free() }}>
-          Redeemed (wrist bands, etc)
-        </label>
-    </div>
+    <p style="font-size:2em"><strong>{{ membership.price }} NOK</strong></p>
   </div>
   <div class="form-group">
-    <label>Term</label>
-    <select class="form-control">
-      <option>V15</option>
-    </select>
+    <label for="membershipAccount">Account</label>
+    {% if membership.term == "Lifetime" %}
+    <div class="radio">
+      <label>
+        <input type="radio" name="account" value="Lifetime" checked> Lifetime
+      </label>
+    </div>
+    {% else %}
+    <div class="radio">
+      <label>
+        <input type="radio" name="account" value="Entrance" {{ 'checked' if membership.account == "Entrance" }}> Entrance
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+        <input type="radio" name="account" value="Wristband" {{ 'checked' if membership.account == "Wristband" }}> Wristband (already paid)
+      </label>
+    </div>
+    {% endif %}
   </div>
   <button type="submit" class="btn btn-primary btn-lg active">Submit</button>
-  <a href="{{url_for('memberships_list')}}" class="btn btn-default btn-lg active">Back</a>
 </form>
-<div id="existingMembers">
-    <h2>Existing members</h2>
-    <ul id="existingMembersList"></ul>
+</div>
+<div>
+  <h2 id="memberships-search-header">Last memberships</h2>
+  <div id="memberships-search-container">
+    {% with memberships=last_memberships%}
+      {% include "memberships/table.html" %}
+    {% endwith %}
+  </div>
 </div>
 {% endblock %}

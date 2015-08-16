@@ -1,56 +1,47 @@
-// Add JavaScript here
-var member_names;
-
 $(function() {
-    var t = null;
-    $("#membershipName").keyup(function(){
-        if (t) {
-            clearTimeout(t);
-        }
-        t = setTimeout("member_filter()", 200);
+  var field = $('#membershipName');
+  var header = $('#memberships-search-header');
+  var defaultHeader = header.text();
+  var container = $('#memberships-search-container');
+
+  // Since we send search requests async this is a possible set of events:
+  //   - User types "m"
+  //   - (1) We request search?q=m
+  //   - User types "a"
+  //   - (2) We request search?q=ma
+  //   - We get the response from (2)
+  //   - We get the response from (1)
+  //
+  // In this case we want to make sure the last response
+  // does not overwrite the reponse from (2).
+  var currRequest = 0;
+  var currResponse = 0;
+
+  function search(query) {
+    var id = ++currRequest;
+
+    var xhr = $.ajax('/memberships/search', {
+      data: { q: query }
     });
-});
 
-function member_filter() {
-  var q = $("#membershipName").val().toLowerCase();
+    xhr.done(function() {
+      if (id <= currResponse) {
+        // A newer response was already rendered.
+        return;
+      }
 
-  matching_names = [];
-
-  if (q.length == 0) {
-    $("#existingMembers").hide();
-  } else {
-    $.each(member_names, function(i, full_name) {
-      names = full_name.split(" ");
-
-      $.each(names, function(j, name) {
-        if (name.toLowerCase().indexOf(q) >= 0) {
-          // q is substring of name, add it to result list
-
-          if ($.inArray(full_name, matching_names) == -1) {
-            // full_name is not already matched
-            matching_names.push(full_name);
-          }
-        }
-      });
+      currResponse = id;
+      container.html(xhr.responseText);
+      if (query) {
+        header.text("Search results for " + query);
+      } else {
+        header.text(defaultHeader);
+      }
     });
   }
 
-  if (matching_names.length != 0) {
-    // Matches were found
-    $("#existingMembersList").empty();
-
-    $.each(matching_names, function(i, full_name) {
-      $("#existingMembersList").append("<li>" + full_name + "</li>");
-    });
-
-    $("#existingMembers").show();
-  }
-}
-
-$(document).ready(function() {
-  $("#existingMembers").hide();
-
-  $.get("/api/names", function(data) {
-    member_names = data.member_names;
+  field.on('input', function(evt) {
+    search(evt.target.value);
   });
 });
+
