@@ -1,4 +1,6 @@
+import string
 from datetime import datetime, timedelta
+import time
 from pytz import timezone
 import pytz
 from functools import wraps
@@ -55,6 +57,22 @@ class Membership(db.Model):
 
     def is_free(self):
         return self.price == 0
+
+    ALPHABET = "".join(str(x) for x in xrange(10))
+    ALPHABET += string.ascii_uppercase
+
+    ALPHABET = ALPHABET\
+        .replace("O", "")\
+        .replace("I", "") # too similar to 1
+
+    def code(self):
+        # convert to Unix epoch
+        epoch = int(time.mktime(self.created_at.timetuple()))
+        code = ""
+        while epoch > 0:
+            epoch, i = divmod(epoch, len(self.ALPHABET))
+            code = self.ALPHABET[i] + code
+        return code
 
 def price_for_term(term):
     if term == 'Lifetime':

@@ -11,8 +11,8 @@
 
   <tbody>
   {% for membership in memberships %}
-    <tr>
-      <td>{{ membership.id }}</td>
+    <tr data-id="{{ membership.id }}">
+      <td>{{ membership.code() }}</td>
       <td>{{ membership.name }}</td>
       <td>{{ membership.term }}</td>
       <td>
