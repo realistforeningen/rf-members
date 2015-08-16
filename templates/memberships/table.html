@@ -16,9 +16,11 @@
       <td>{{ membership.name }}</td>
       <td>{{ membership.term }}</td>
       <td>
-        {{ membership.price }}
-        {% if membership.account != "Lifetime" %}
-        - {{ membership.account }}
+        {% if membership.account != "Unknown" %}
+          {{ membership.price }}
+          {% if membership.account != "Lifetime" %}
+          - {{ membership.account }}
+          {% endif %}
         {% endif %}
       </td>
       <td>
