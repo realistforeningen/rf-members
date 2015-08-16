@@ -12,7 +12,11 @@
   <tbody>
   {% for membership in memberships %}
     <tr data-id="{{ membership.id }}">
-      <td>{{ membership.code() }}</td>
+      <td>
+        {% if membership.term != "Lifetime" %}
+          {{ membership.code() }}
+        {% endif %}
+      </td>
       <td>{{ membership.name }}</td>
       <td>{{ membership.term }}</td>
       <td>
