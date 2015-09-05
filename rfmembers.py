@@ -297,6 +297,10 @@ def memberships_list():
     memberships = Membership.query.all()
     return render_template('memberships/list.html', memberships=memberships)
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
 if __name__ == '__main__':
     manager = Manager(app)
     manager.add_command('db', MigrateCommand)
