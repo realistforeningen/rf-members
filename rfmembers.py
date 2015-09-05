@@ -186,6 +186,7 @@ def sessions_create():
 @app.route('/sessions/delete', methods=['POST'])
 def sessions_destroy():
     g.sess.closed_at = datetime.utcnow()
+    db.session.commit()
     logout()
     return redirect(url_for('index'))
 
