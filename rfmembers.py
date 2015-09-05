@@ -123,6 +123,9 @@ def before_request():
         # Closed sessions are not valid
         if sess.closed_at is not None:
             sess = None
+        # Old sessions are not valid
+        if (datetime.now() - sess.created_at) > timedelta(days = 1):
+            sess = None
         setattr(g, 'sess', sess)
     else:
         setattr(g, 'sess', None)
