@@ -42,11 +42,13 @@
         <input type="radio" name="account" value="Entrance" {{ 'checked' if membership.account == "Entrance" }}> Entrance
       </label>
     </div>
+    {% if config.ENABLE_WRISTBAND %}
     <div class="radio">
       <label>
         <input type="radio" name="account" value="Wristband" {{ 'checked' if membership.account == "Wristband" }}> Wristband (already paid)
       </label>
     </div>
+    {% endif %}
     {% endif %}
   </div>
   <button type="submit" class="btn btn-primary btn-lg active">Submit</button>
