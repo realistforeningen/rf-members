@@ -5,6 +5,7 @@ from pytz import timezone
 import pytz
 from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, g, abort
+from calendar import month_name
 
 from flask.ext.script import Manager
 
@@ -106,6 +107,9 @@ class Session(db.Model):
             return True
 
         if action == 'memberships_new_lifetime':
+            return self.is_atleast('Admin')
+
+        if action == 'reports':
             return self.is_atleast('Admin')
 
         if action == 'delete':
@@ -300,6 +304,21 @@ def memberships_settle_submit():
 def memberships_list():
     memberships = Membership.query.all()
     return render_template('memberships/list.html', memberships=memberships)
+
+@app.route('/reports')
+@requires('reports')
+def reports():
+    membership_count = db.session.query(
+        db.func.count(Membership.id),
+        db.func.strftime('%m', Membership.created_at).label('month')
+    ) \
+        .group_by('month') \
+        .order_by('month') \
+        .filter(Membership.term == app.config['TERM'])
+
+    summary = [{"count": count, "month": month_name[int(month)]} for (count, month) in membership_count]
+
+    return render_template('reports.html', summary=summary)
 
 @app.errorhandler(404)
 def page_not_found(e):

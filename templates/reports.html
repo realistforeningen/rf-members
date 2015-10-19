@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% set active_page = "reports" %}
+{% block body %}
+
+<h2>Registered memberships</h2>
+<table class="table">
+<thead>
+  <tr><th>Month</th><th>Count</th></tr>
+</thead>
+<tbody>
+{% for row in summary %}
+  <tr><td>{{ row.month }}</td><td>{{ row.count }}</td></tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}
