@@ -38,9 +38,18 @@
       </td>
     </tr>
   {% else %}
+    {% if not banned %}
     <tr>
       <td></td>
       <td colspan="4"><em>(nothing)</em></td>
+    </tr>
+    {% endif %}
+  {% endfor %}
+  {% for name in banned %}
+    <tr class="danger">
+      <td></td>
+      <td>{{ name }}</td>
+      <td colspan="3"><strong>Contact Skjenkemester</strong></td>
     </tr>
   {% endfor %}
   </tbody>
