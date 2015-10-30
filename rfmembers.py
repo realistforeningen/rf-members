@@ -26,6 +26,7 @@ app.config['PASSWORDS'] = {
     'Admin': 'admin',
     'Superadmin': 'superadmin',
 }
+app.config['BLACKLIST'] = []
 
 app.config.from_pyfile('production.cfg', silent=True)
 
@@ -247,8 +248,20 @@ def memberships_search():
     for part in query_string.split():
         like_string = '%' + part.lower() + '%'
         query = query.filter(Membership.queryname.like(like_string))
-    memberships = query.order_by(db.desc('created_at')).limit(10)
-    return render_template('memberships/table.html', memberships=memberships)
+
+    limit = 10
+    memberships = list(query.order_by(db.desc('created_at')).limit(limit))
+
+    banned = []
+
+    if len(memberships) < limit:
+        # Search in blacklist
+        banned = app.config["BLACKLIST"]
+        for part in query_string.split():
+            matches = lambda name: part.lower() in name.lower()
+            banned = filter(matches, banned)
+
+    return render_template('memberships/table.html', memberships=memberships, banned=banned)
 
 @app.route('/memberships/settle')
 @requires('settlement')
