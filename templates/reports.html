@@ -3,15 +3,31 @@
 {% block body %}
 
 <h2>Registered memberships</h2>
+
+<h3>Lifetime</h3>
+<p>We have <strong>{{ lifetime }}</strong> registered lifetime memberships.</p>
+
+{% for term in summary %}
+<h3>{{ term.name }}</h3>
 <table class="table">
 <thead>
-  <tr><th>Month</th><th>Count</th></tr>
+  <tr><th>Week</th><th>Count</th></tr>
 </thead>
 <tbody>
-{% for row in summary %}
-  <tr><td>{{ row.month }}</td><td>{{ row.count }}</td></tr>
+{% for row in term.rows %}
+  <tr>
+  	<td>{{ row.week }}
+  	{% if row.year != term.year %}
+  	  <small>({{ row.year }})</small>
+  	{% endif %}
+  </td>
+  <td>{{ row.count }}</td></tr>
 {% endfor %}
 </tbody>
+<tfoot>
+  <tr><th>Total</th><th>{{ term.total }}</th></tr>
+</tfoot>
 </table>
+{% endfor %}
 
 {% endblock %}

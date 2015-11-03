@@ -6,6 +6,7 @@ import pytz
 from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, g, abort
 from calendar import month_name
+from collections import defaultdict
 
 from flask.ext.script import Manager
 
@@ -323,15 +324,35 @@ def memberships_list():
 def reports():
     membership_count = db.session.query(
         db.func.count(Membership.id),
-        db.func.strftime('%m', Membership.created_at).label('month')
+        Membership.term,
+        db.func.strftime('%Y', Membership.created_at).label('year'),
+        db.func.strftime('%W', Membership.created_at).label('week')
     ) \
-        .group_by('month') \
-        .order_by('month') \
-        .filter(Membership.term == app.config['TERM'])
+        .group_by('year', 'week', Membership.term) \
+        .order_by('year', 'week')
 
-    summary = [{"count": count, "month": month_name[int(month)]} for (count, month) in membership_count]
+    terms = defaultdict(lambda: [])
+    lifetime = 0
 
-    return render_template('reports.html', summary=summary)
+    for count, term, year, week in membership_count:
+        if term == "Lifetime":
+            lifetime += count
+        else:
+            terms[term].append({"count": count, "year": int(year), "week": week})
+
+    summary = []
+    for term in terms:
+        summary.append({
+            "name": term,
+            "rows": terms[term],
+            "total": sum(r["count"] for r in terms[term]),
+            "year": int(term[1:]) + 2000,
+            "sortkey": term[1:] + str(int(term[0] == 'H'))
+        })
+
+    summary.sort(key=lambda k: k["sortkey"], reverse=True)
+
+    return render_template('reports.html', summary=summary, lifetime=lifetime)
 
 @app.errorhandler(404)
 def page_not_found(e):
