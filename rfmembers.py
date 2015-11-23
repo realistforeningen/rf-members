@@ -13,6 +13,7 @@ from flask.ext.script import Manager
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.assets import Environment, Bundle
+from sqlalchemy.ext.hybrid import hybrid_property
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -43,8 +44,8 @@ def compute_queryname(context):
 
 class Membership(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text, nullable=False)
-    queryname = db.Column(db.Text, nullable=False, default=compute_queryname, onupdate=compute_queryname)
+    _name = db.Column('name', db.Text, nullable=False)
+    queryname = db.Column(db.Text, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     term = db.Column(db.Text, nullable=False)
     account = db.Column(db.Text, nullable=False) # Entrance/Wristband/Lifetime/Unknown
@@ -57,6 +58,15 @@ class Membership(db.Model):
     settled_session = db.relationship("Session", foreign_keys=[settled_by], backref="settled_memberships")
 
     valid_term = (term == "Lifetime") | (term == app.config['TERM'])
+
+    @hybrid_property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+        self.queryname = value.lower()
 
     def is_free(self):
         return self.price == 0
