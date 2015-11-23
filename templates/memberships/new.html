@@ -18,11 +18,11 @@
     <li {{ 'class="active"'|safe if membership.term == "Lifetime" }}><a href="?term=Lifetime">Lifetime</a></li>
     {% endif %}
   </ul>
-<form action="{{url_for('memberships_create')}}" method="POST">
+<form action="{{url_for('memberships_create')}}" method="POST" autocomplete="off">
   <input type="hidden" name="term" value="{{ membership.term }}">
   <div class="form-group">
     <label for="membershipName">Name of member</label>
-    <input type="text" class="form-control" id="membershipName" name="name" value="{{membership.name or ''}}" autofocus>
+    <input type="text" class="form-control" id="membershipName" name="name" value="{{membership.name or ''}}" autofocus autocomplete="off">
   </div>
   <div class="form-group">
     <label for="membershipPrice">Payment</label>
