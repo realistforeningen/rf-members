@@ -176,10 +176,10 @@ def index():
         return redirect(url_for('memberships_new'))
 
 @app.route('/sessions/new')
-def sessions_new():
+def sessions_new(did_fail=False):
     level = request.args['level']
     description = request.args['description']
-    return render_template('sessions/new.html', level=level, description=description)
+    return render_template('sessions/new.html', level=level, description=description, did_fail=did_fail)
 
 @app.route('/sessions/new', methods=['POST'])
 def sessions_create():
@@ -187,8 +187,7 @@ def sessions_create():
     real_password = app.config['PASSWORDS'][request.form["level"]]
 
     if real_password != request.form["password"]:
-        # TODO: Show error
-        return sessions_new()
+        return sessions_new(did_fail=True)
 
     sess = Session(
         level=level,

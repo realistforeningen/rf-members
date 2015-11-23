@@ -2,6 +2,11 @@
 {% block body %}
 
 <form method="post">
+  {% if did_fail %}
+    <div class="alert alert-danger">
+      <p>Wrong password. Please try again.</p>
+    </div>
+  {% endif %}
   <input type="hidden" name="level" value="{{ level }}">
   <input type="hidden" name="description" value="{{ description }}">
   <div class="form-group">
