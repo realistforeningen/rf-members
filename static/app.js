@@ -43,5 +43,12 @@ $(function() {
   field.on('input', function(evt) {
     search(evt.target.value);
   });
+
+  field.on('keydown', function(evt) {
+    if (evt.which == 13) {
+      // Prevent enter
+      evt.preventDefault();
+    }
+  });
 });
 
