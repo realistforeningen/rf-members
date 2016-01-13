@@ -20,7 +20,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['ASSETS_DEBUG'] = True
 app.config['SECRET_KEY'] = "development key"
 app.config['TIMEZONE'] = 'Europe/Oslo'
-app.config['TERM'] = "H15"
+app.config['TERM'] = "V16"
 app.config['PRICE'] = 50
 app.config['PASSWORDS'] = {
     'Funk': 'funk',
@@ -129,6 +129,10 @@ class Session(db.Model):
             if isinstance(thing, Membership):
                 if thing.settled_by is None:
                     return thing.created_by == self.id
+
+        if action == 'edit':
+            if isinstance(thing, Membership):
+                return True
 
         return False
 
@@ -241,6 +245,11 @@ def memberships_create():
     db.session.add(membership)
     db.session.commit()
     return redirect(url_for('memberships_new', term=membership.term))
+
+@app.route('/memberships/<id>/edit')
+def memberships_edit(id):
+    mem = Membership.query.get(id)
+    return render_template('memberships/edit.html', membership=mem)
 
 @app.route('/memberships/<id>/delete', methods=['POST'])
 @requires('memberships_new')
