@@ -12,6 +12,12 @@
     </div>
   {% endif %}
 
+  {% if g.sess.description == 'Friday pub' %}
+    <div class="alert alert-info">
+      <p>People born after <strong>{{ latest_born_date().strftime('%d.%m.%Y') }}</strong> are 18 years old or older.</p>
+    </div>
+  {% endif %}
+
   <ul class="nav nav-tabs">
     <li {{ 'class="active"'|safe if membership.term == config.TERM }}><a href="?term={{config.TERM}}">{{config.TERM}}</a></li>
     {% if g.sess.can('memberships_new_lifetime') %}

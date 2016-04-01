@@ -151,12 +151,19 @@ def before_request():
         setattr(g, 'sess', None)
 
 @app.context_processor
-def inject_tz():
+def inject_helpers():
     def localize(d):
         if d.tzinfo is None:
             d = d.replace(tzinfo=pytz.utc)
         return d.astimezone(tz)
-    return dict(localize=localize)
+    def latest_born_date():
+        now = datetime.now()
+        now = now.replace(year=now.year-18)
+        return now
+    return dict(
+        localize=localize,
+        latest_born_date=latest_born_date
+    )
 
 def logout():
     session.pop('session_id')
