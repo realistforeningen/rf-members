@@ -158,7 +158,7 @@ def inject_helpers():
         return d.astimezone(tz)
     def latest_born_date():
         now = datetime.now()
-        now = now.replace(year=now.year-18)
+        now = now.replace(year=now.year-18) - timedelta(days = 1)
         return now
     return dict(
         localize=localize,
