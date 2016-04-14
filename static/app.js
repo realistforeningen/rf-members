@@ -39,9 +39,20 @@ $(function() {
       }
     });
   }
+  
+  // We start searching 100ms after you've pressed a key
+  var delay = 100;
+  var delayTimeout;
 
   field.on('input', function(evt) {
-    search(evt.target.value);
+    if (delayTimeout) {
+      clearTimeout(delayTimeout);
+    }
+
+    delayTimeout = setTimeout(function() {
+      search(evt.target.value);
+      delayTimeout = null;
+    }, delay);
   });
 
   field.on('keydown', function(evt) {
