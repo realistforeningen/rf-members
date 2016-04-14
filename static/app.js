@@ -40,8 +40,7 @@ $(function() {
     });
   }
   
-  // We start searching 100ms after you've pressed a key
-  var delay = 100;
+  var delay = 200;
   var delayTimeout;
 
   field.on('input', function(evt) {
