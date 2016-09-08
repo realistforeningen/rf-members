@@ -1,8 +1,9 @@
 # Web framework
-Flask == 0.10.1
+Flask == 0.11.0
 
 # ORM
 SQLAlchemy == 0.9.9 
+Flask-SQLAlchemy
 
 # Asset management
 Flask-Assets

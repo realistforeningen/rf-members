@@ -23,11 +23,10 @@ After that you can install dependencies using:
 
 ## Database
 
-At the moment we're using a SQLite database. We use Alembic (through
-Flask-Migrate) for running migrations. To make sure your local database
+At the moment we're using a SQLite database.  To make sure your local database
 is up to date, run:
 
-    $ python rfmembers.py db upgrade
+    $ python migrate.py
 
 This doesn't do anything when your database is already up-to-date, so
 it's better to run this one time too often than one time too less.
@@ -36,7 +35,7 @@ it's better to run this one time too often than one time too less.
 
 Run the app in debug mode:
 
-    $ python rfmembers.py runserver -d
+    $ ./rfmembers.sh run
 
 Open <http://localhost:5000/>
 

@@ -8,10 +8,8 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, s
 from calendar import month_name
 from collections import defaultdict
 
-from flask.ext.script import Manager
-
-from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.assets import Environment, Bundle
+from flask_sqlalchemy import SQLAlchemy
+from flask_assets import Environment, Bundle
 from sqlalchemy.ext.hybrid import hybrid_property
 
 app = Flask(__name__)
@@ -381,6 +379,3 @@ def reports():
 def page_not_found(e):
     return render_template('404.html'), 404
 
-if __name__ == '__main__':
-    manager = Manager(app)
-    manager.run()
