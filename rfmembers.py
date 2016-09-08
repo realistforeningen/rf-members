@@ -369,6 +369,15 @@ def reports():
 
     return render_template('reports.html', summary=summary, lifetime=lifetime)
 
+@app.route('/reports/lifetime')
+@requires('reports')
+def reports_lifetime():
+    memberships = Membership.query \
+        .filter(Membership.term == "Lifetime") \
+        .order_by(Membership.created_at.desc())
+
+    return render_template('reports/lifetime.html', memberships=memberships)
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
