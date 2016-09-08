@@ -60,5 +60,28 @@ $(function() {
       evt.preventDefault();
     }
   });
+
+  function updateStartedAt(dom) {
+    var seconds = (new Date).valueOf()/1000 - dom.data('started-at');
+    var total_minutes = (seconds/60)|0;
+    var minutes = total_minutes%60;
+    var hours = (total_minutes/60)|0;
+    var text;
+    if (hours) {
+      text = hours + "h " + minutes + "m";
+    } else {
+      text = minutes + "m";
+    }
+
+    dom.text(text);
+  }
+
+  $('[data-started-at]').each(function() {
+    var dom = $(this);
+    updateStartedAt(dom);
+    setInterval(function() {
+      updateStartedAt(dom);
+    }, 5000);
+  });
 });
 

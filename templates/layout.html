@@ -58,10 +58,8 @@
         {% if g.sess %}
         <form method="post" action="{{ url_for('sessions_destroy') }}" class="navbar-form navbar-right navbar-extra">
           <p>
-            <strong>
-              {{ g.sess.level }}
-              - {{ g.sess.description }}
-            </strong>
+            Logged in as <strong>{{ g.sess.user_name }}</strong>
+            ({{ g.sess.level }} - {{ g.sess.description }})
           </p>
           <button class="btn btn-success">Log out</button>
         </form>

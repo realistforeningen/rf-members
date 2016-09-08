@@ -18,6 +18,13 @@
     </div>
   {% endif %}
 
+  <div class="alert alert-warning">
+    <p>
+      Hi <strong>{{ g.sess.user_name }}</strong>. You've been logged in for
+      <strong data-started-at="{{ localize(g.sess.created_at).strftime("%s") }}"></strong>.
+    </p>
+  </div>
+
   <ul class="nav nav-tabs">
     <li {{ 'class="active"'|safe if membership.term == config.TERM }}><a href="?term={{config.TERM}}">{{config.TERM}}</a></li>
     <li {{ 'class="active"'|safe if membership.term == "Lifetime" }}><a href="?term=Lifetime">Lifetime (sølvkort)</a></li>
