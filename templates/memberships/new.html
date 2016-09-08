@@ -14,7 +14,7 @@
 
   {% if g.sess.description == 'Friday pub' %}
     <div class="alert alert-info">
-      <p>People born after <strong>{{ latest_born_date().strftime('%d.%m.%Y') }}</strong> are 18 years old or older.</p>
+      <p>People born on <strong>{{ latest_born_date().strftime('%d.%m.%Y') }}</strong> or earlier are 18 years old or older.</p>
     </div>
   {% endif %}
 
