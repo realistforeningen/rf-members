@@ -11,7 +11,6 @@ from collections import defaultdict
 from flask.ext.script import Manager
 
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.assets import Environment, Bundle
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -37,7 +36,6 @@ tz = timezone(app.config['TIMEZONE'])
 assets = Environment(app)
 
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
 
 def compute_queryname(context):
     return context.current_parameters['name'].lower()
@@ -385,5 +383,4 @@ def page_not_found(e):
 
 if __name__ == '__main__':
     manager = Manager(app)
-    manager.add_command('db', MigrateCommand)
     manager.run()
