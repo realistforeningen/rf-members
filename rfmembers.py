@@ -95,6 +95,7 @@ class Session(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.Text, nullable=False)
     level = db.Column(db.Text, nullable=False)
+    user_name = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     closed_at = db.Column(db.DateTime, nullable=True)
 

@@ -54,5 +54,11 @@ def run():
             )
         """)
 
+    @migrate
+    def add_user_name():
+        db.session.execute("""
+            ALTER TABLE session ADD COLUMN user_name TEXT
+        """)
+
 if __name__ == '__main__':
     run()
