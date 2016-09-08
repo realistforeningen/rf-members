@@ -181,10 +181,10 @@ def index():
         return redirect(url_for('memberships_new'))
 
 @app.route('/sessions/new')
-def sessions_new(did_fail=False):
+def sessions_new(error_message=None):
     level = request.args['level']
     description = request.args['description']
-    return render_template('sessions/new.html', level=level, description=description, did_fail=did_fail)
+    return render_template('sessions/new.html', level=level, description=description, error_message=error_message)
 
 @app.route('/sessions/new', methods=['POST'])
 def sessions_create():
@@ -192,10 +192,14 @@ def sessions_create():
     real_password = app.config['PASSWORDS'][request.form["level"]]
 
     if real_password != request.form["password"]:
-        return sessions_new(did_fail=True)
+        return sessions_new(error_message="Wrong password")
+
+    if not request.form["name"]:
+        return sessions_new(error_message="Name is missing")
 
     sess = Session(
         level=level,
+        user_name=request.form["name"],
         description=request.form.get("description", "Unknown"),
     )
     db.session.add(sess)
