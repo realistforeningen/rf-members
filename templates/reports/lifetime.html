@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% set active_page = "reports" %}
+{% block body %}
+
+<h2>Lifetime members</h2>
+
+<table class="table">
+<thead>
+  <tr><th>Name</th><th>Created at</th></tr>
+</thead>
+<tbody>
+{% for membership in memberships %}
+  <tr>
+    <td>{{ membership.name }}</td>
+    <td>{{ localize(membership.created_at).strftime('%Y-%m-%d %H:%M') }}</td>
+  </tr>
+{% endfor %}
+</tbody>
+
+{% endblock %}
