@@ -19,10 +19,15 @@
   {% endif %}
 
   <div class="alert alert-warning">
-    <p>
+    <p style="margin-bottom:0.5em">
       Hi <strong>{{ g.sess.user_name }}</strong>. You've been logged in for
-      <strong data-started-at="{{ localize(g.sess.created_at).strftime("%s") }}"></strong>.
-    </p>
+      <strong data-started-at="{{ localize(g.sess.created_at).strftime("%s") }}"></strong>. Not you?</p>
+    <form action="/sessions/switch" method="POST" class="form-inline">
+      <div class="form-group">
+        <input id="switch-name" type="text" name="name" class="form-control input-sm">
+      </div>
+      <button class="btn btn-sm btn-primary">Change name</button>
+    </form>
   </div>
 
   <ul class="nav nav-tabs">

@@ -207,6 +207,19 @@ def sessions_create():
     session["session_id"] = sess.id
     return redirect(url_for('index'))
 
+@app.route('/sessions/switch', methods=['POST'])
+def sessions_switch():
+    new_session = Session(
+        level=g.sess.level,
+        user_name=request.form["name"],
+        description=g.sess.description
+    )
+    db.session.add(new_session)
+    g.sess.closed_at = datetime.utcnow()
+    db.session.commit()
+    session["session_id"] = new_session.id
+    return redirect(url_for('index'))
+
 @app.route('/sessions/delete', methods=['POST'])
 def sessions_destroy():
     g.sess.closed_at = datetime.utcnow()
