@@ -114,9 +114,6 @@ class Session(db.Model):
         if action == 'memberships_new':
             return True
 
-        if action == 'memberships_new_lifetime':
-            return self.is_atleast('Admin')
-
         if action == 'reports':
             return self.is_atleast('Admin')
 
@@ -238,9 +235,6 @@ def memberships_create():
     errors = []
     if membership.name.strip() == '':
         errors.append("Name is required")
-
-    if membership.term == 'Lifetime' and not g.sess.can('memberships_new_lifetime'):
-        errors.append("You don't have access to add lifetime membership")
 
     if len(errors) > 0:
         return render_template('memberships/new.html', membership=membership, errors=errors)

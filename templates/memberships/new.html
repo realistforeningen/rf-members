@@ -20,9 +20,7 @@
 
   <ul class="nav nav-tabs">
     <li {{ 'class="active"'|safe if membership.term == config.TERM }}><a href="?term={{config.TERM}}">{{config.TERM}}</a></li>
-    {% if g.sess.can('memberships_new_lifetime') %}
-    <li {{ 'class="active"'|safe if membership.term == "Lifetime" }}><a href="?term=Lifetime">Lifetime</a></li>
-    {% endif %}
+    <li {{ 'class="active"'|safe if membership.term == "Lifetime" }}><a href="?term=Lifetime">Lifetime (sølvkort)</a></li>
   </ul>
 <form action="{{url_for('memberships_create')}}" method="POST" autocomplete="off">
   <input type="hidden" name="term" value="{{ membership.term }}">
@@ -36,27 +34,31 @@
   </div>
   <div class="form-group">
     <label for="membershipAccount">Account</label>
-    {% if membership.term == "Lifetime" %}
-    <div class="radio">
-      <label>
-        <input type="radio" name="account" value="Lifetime" checked> Lifetime
-      </label>
-    </div>
-    {% else %}
     <div class="radio">
       <label>
         <input type="radio" name="account" value="Entrance" {{ 'checked' if membership.account == "Entrance" }}> Entrance
       </label>
     </div>
-    {% if config.ENABLE_WRISTBAND %}
+    {% if membership.term == "Lifetime" and g.sess.is_atleast('Admin') %}
+    <div class="radio">
+      <label>
+        <input type="radio" name="account" value="Lifetime" {{ 'checked' if membership.account == "Lifetime" }}> Lifetime
+      </label>
+    </div>
+    {% endif %}
+    {% if config.ENABLE_WRISTBAND and membership.term != "Lifetime" %}
     <div class="radio">
       <label>
         <input type="radio" name="account" value="Wristband" {{ 'checked' if membership.account == "Wristband" }}> Wristband (already paid)
       </label>
     </div>
     {% endif %}
-    {% endif %}
   </div>
+  {% if membership.term == "Lifetime" %}
+    <div class="alert alert-info">
+      <p><strong>NOTE:</strong> The member must contact Sekretær (sekretaer@rf.uio.no) directly in order to get a membership card (sølvkort).</p>
+    </div>
+  {% endif %}
   <button type="submit" class="btn btn-primary btn-lg active">Submit</button>
 </form>
 </div>
