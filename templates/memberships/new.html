@@ -21,7 +21,7 @@
   <div class="alert alert-warning">
     <p style="margin-bottom:0.5em">
       Hi <strong>{{ g.sess.user_name }}</strong>. You've been logged in for
-      <strong data-started-at="{{ localize(g.sess.created_at).strftime("%s") }}"></strong>. Not you?</p>
+      <strong data-started-at="{{ epoch(g.sess.created_at) }}"></strong>. Not you?</p>
     <form action="/sessions/switch" method="POST" class="form-inline">
       <div class="form-group">
         <input id="switch-name" type="text" name="name" class="form-control input-sm">

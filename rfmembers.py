@@ -154,9 +154,13 @@ def inject_helpers():
         now = datetime.now()
         now = now.replace(year=now.year-18) - timedelta(days = 1)
         return now
+    def epoch(d):
+        start = datetime.utcfromtimestamp(0)
+        return (d - start).total_seconds()
     return dict(
         localize=localize,
-        latest_born_date=latest_born_date
+        latest_born_date=latest_born_date,
+        epoch=epoch
     )
 
 def logout():
