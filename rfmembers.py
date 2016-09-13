@@ -112,6 +112,9 @@ class Session(db.Model):
         if action == 'settlement_all':
             return self.is_atleast('Admin')
 
+        if action == 'wristband':
+            return app.config['ENABLE_WRISTBAND']
+
         if action == 'memberships_new':
             return True
 

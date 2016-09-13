@@ -58,7 +58,7 @@
       </label>
     </div>
     {% endif %}
-    {% if config.ENABLE_WRISTBAND and membership.term != "Lifetime" %}
+    {% if g.sess.can('wristband') and membership.term != "Lifetime" %}
     <div class="radio">
       <label>
         <input type="radio" name="account" value="Wristband" {{ 'checked' if membership.account == "Wristband" }}> Wristband (already paid)
