@@ -254,9 +254,6 @@ def memberships_create():
     )
     membership.price = price_for_term(membership.term)
 
-    if membership.term == "Lifetime":
-        membership.account = "Lifetime"
-
     errors = []
     if membership.name.strip() == '':
         errors.append("Name is required")
