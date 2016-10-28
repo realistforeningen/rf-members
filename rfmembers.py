@@ -83,6 +83,14 @@ class Membership(db.Model):
             code = self.ALPHABET[i] + code
         return code
 
+    @classmethod
+    def count_dict(cls, column):
+        query = db.session.query(column, db.func.count()).group_by(column)
+        result = {}
+        for row in query:
+            result[row[0]] = row[1]
+        return result
+
 def price_for_term(term):
     if term == 'Lifetime':
         return app.config['PRICE'] * 10
@@ -120,6 +128,9 @@ class Session(db.Model):
 
         if action == 'reports':
             return self.is_atleast('Admin')
+
+        if action == 'sessions_list':
+            return self.is_atleast('SM')
 
         if action == 'delete':
             # We can only delete our own memberships which are not settled
@@ -399,6 +410,13 @@ def reports_lifetime():
         .order_by(Membership.created_at.desc())
 
     return render_template('reports/lifetime.html', memberships=memberships)
+
+@app.route('/sessions')
+def sessions_list():
+    created = Membership.count_dict(Membership.created_by)
+    settled = Membership.count_dict(Membership.settled_by)
+    sessions = Session.query.order_by(db.desc('created_at'))
+    return render_template('sessions/list.html', sessions=sessions, created=created, settled=settled)
 
 @app.errorhandler(404)
 def page_not_found(e):

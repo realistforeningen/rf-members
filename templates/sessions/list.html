@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% set active_page = "sessions_list" %}
+{% block body %}
+<h2>Sessions</h2>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Time</th>
+      <th>Description</th> 
+      <th>Name</th>
+      <th># created</td>
+      <th># settled</td>
+    </tr>
+  </thead>
+  <tbody>
+  {% for session in sessions %}
+    <tr>
+      <td> {{ session.id }} </td>
+      <td> {{ localize(session.created_at).strftime('%Y-%m-%d %H:%M') }} </td>
+      <td> {{ session.description }} </td>
+      <td> {{ session.user_name }} </td>
+      <td> {{ created[session.id] or 0 }} </td>
+      <td> {{ settled[session.id] or 0 }} </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+
