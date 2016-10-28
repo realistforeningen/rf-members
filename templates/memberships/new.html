@@ -51,10 +51,10 @@
         <input type="radio" name="account" value="Entrance" {{ 'checked' if membership.account == "Entrance" }}> Entrance
       </label>
     </div>
-    {% if membership.term == "Lifetime" and g.sess.is_atleast('Admin') %}
+    {% if g.sess.is_atleast('Admin') %}
     <div class="radio">
       <label>
-        <input type="radio" name="account" value="Lifetime" {{ 'checked' if membership.account == "Lifetime" }}> Lifetime
+        <input type="radio" name="account" value="BankAccount" {{ 'checked' if membership.account == "BankAccount" }}> Bank Account
       </label>
     </div>
     {% endif %}

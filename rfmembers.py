@@ -44,7 +44,7 @@ class Membership(db.Model):
     queryname = db.Column(db.Text, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     term = db.Column(db.Text, nullable=False)
-    account = db.Column(db.Text, nullable=False) # Entrance/Wristband/Lifetime/Unknown
+    account = db.Column(db.Text, nullable=False) # Entrance/Wristband/BankAccount/Unknown
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     created_by = db.Column(db.Integer, db.ForeignKey('session.id'), nullable=False)

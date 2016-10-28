@@ -5,7 +5,7 @@
   <li {{ 'class="active"'|safe if account == "Entrance" }}><a href="?account=Entrance">Entrance</a></li>
   {% if g.sess.can('settlement_all') %}
   <li {{ 'class="active"'|safe if account == "Wristband" }}><a href="?account=Wristband">Wristband</a></li>
-  <li {{ 'class="active"'|safe if account == "Lifetime" }}><a href="?account=Lifetime">Lifetime</a></li>
+  <li {{ 'class="active"'|safe if account == "BankAccount" }}><a href="?account=BankAccount">Bank Account</a></li>
   {% endif %}
 </ul>
 
