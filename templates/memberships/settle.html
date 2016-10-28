@@ -25,6 +25,9 @@
         {{ session.description }}
         <span class="text-muted">
           &nbsp;&nbsp;
+          {% if session.user_name %}
+            {{ session.user_name }} at
+          {% endif %}
           {{ localize(session.created_at).strftime('%Y-%m-%d %H:%M') }}
         </span>
       </td>
