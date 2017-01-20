@@ -10,3 +10,6 @@ Flask-Assets
 
 # Timezones
 pytz
+
+# Reading Vipps reports
+openpyxl == 2.4.1
