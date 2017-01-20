@@ -60,5 +60,20 @@ def run():
             ALTER TABLE session ADD COLUMN user_name TEXT
         """)
 
+    @migrate
+    def add_vipps():
+        db.session.execute("""
+            ALTER TABLE membership ADD COLUMN vipps_transaction_id TEXT
+        """)
+
+        db.session.execute("""
+            CREATE TABLE vipps_report (
+                id INTEGER NOT NULL,
+                created_at DATETIME NOT NULL,
+                state TEXT NOT NULL DEFAULT "empty",
+                PRIMARY KEY (id)
+            )
+        """)
+
 if __name__ == '__main__':
     run()

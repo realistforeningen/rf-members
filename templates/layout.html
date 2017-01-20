@@ -54,6 +54,11 @@
               <a href="{{ url_for('sessions_list') }}">Sessions</a>
             </li>
           {% endif %}
+          {% if g.sess.can('vipps') %}
+            <li{% if active_page == "vipps" %} class="active"{% endif %}>
+              <a href="{{ url_for('vipps_index') }}">Vipps</a>
+            </li>
+          {% endif %}
         </ul>
         {% if g.sess %}
         <form method="post" action="{{ url_for('sessions_destroy') }}" class="navbar-form navbar-right navbar-extra">

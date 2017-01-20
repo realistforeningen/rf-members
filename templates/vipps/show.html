@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% set active_page = "vipps" %}
+{% block body %}
+
+<h2>Vipps import</h2>
+
+<h3>Report #{{ report.id }} - {{ report.created_at }}</h3>
+
+<form method="POST">
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Transaction ID</th>
+      <th>Name</th>
+      <th>NOK</th>
+      <th>Message</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for entry in report.entries() %}
+      <tr>
+        <td>{{ entry.transaction.id }}</td>
+        <td>{{ entry.transaction.first_name }} {{ entry.transaction.last_name }}</td>
+        <td>{{ entry.transaction.amount }}</td>
+        <td>{{ entry.transaction.message }}</td>
+        <td>
+          {% if entry.is_complete() %}
+            {% for m in entry.memberships %}
+            <span class="text-success">{{ m.name }}</span>{% if loop.index > 1 %}, {% endif %}
+            {% endfor %}
+          {% elif entry.guess_term() %}
+            <input type="hidden" name="transaction_id" value="{{ entry.transaction.id }}">
+            <input type="hidden" name="term" value="{{ entry.guess_term() }}">
+            <input type="text" name="name" value="{{ entry.guess_name() }}" class="form-control">
+          {% else %}
+            <span class="text-warning">Unable to detect payment type</span>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<button class="btn btn-primary">Add members and mark as resolved</button>
+
+</form>
+
+{% endblock %}
+
+

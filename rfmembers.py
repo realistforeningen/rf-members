@@ -6,11 +6,15 @@ import pytz
 from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, g, abort
 from calendar import month_name
-from collections import defaultdict
+from collections import defaultdict, namedtuple
+import re
+import os
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_assets import Environment, Bundle
 from sqlalchemy.ext.hybrid import hybrid_property
+
+import vippsparser
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -19,6 +23,7 @@ app.config['SECRET_KEY'] = "development key"
 app.config['TIMEZONE'] = 'Europe/Oslo'
 app.config['TERM'] = "V16"
 app.config['PRICE'] = 50
+app.config['VIPPS_STORAGE_PATH'] = os.path.join(app.root_path, 'vipps-reports')
 app.config['PASSWORDS'] = {
     'Funk': 'funk',
     'SM': 'sm',
@@ -45,6 +50,7 @@ class Membership(db.Model):
     price = db.Column(db.Integer, nullable=False)
     term = db.Column(db.Text, nullable=False)
     account = db.Column(db.Text, nullable=False) # Entrance/Wristband/BankAccount/Unknown
+    vipps_transaction_id = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     created_by = db.Column(db.Integer, db.ForeignKey('session.id'), nullable=False)
@@ -143,6 +149,70 @@ class Session(db.Model):
                 return True
 
         return False
+
+class VippsReport(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    state = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    def file_path(self):
+        return os.path.join(app.config['VIPPS_STORAGE_PATH'], "%05d.xlsx" % self.id)
+
+    def transactions(self):
+        return vippsparser.load_transactions(self.file_path())
+
+    def bootstrap_class(self):
+        if self.state == "created":
+            return "danger"
+
+        if self.state == "uploaded":
+            return ""
+
+        if self.state == "resolved":
+            return "success"
+
+    class Entry:
+        COMMAND_PATTERN = r'^([vh]\d+)|(evig|evil)'
+
+        def __init__(self, transaction, memberships):
+            self.transaction = transaction
+            self.memberships = memberships
+            self.command_match = re.search(self.COMMAND_PATTERN, self.transaction.message, re.I)
+
+        def is_complete(self):
+            return len(self.memberships) > 0
+
+        def guess_name(self):
+            if self.command_match:
+                idx = self.command_match.end(0)
+                name = self.transaction.message[idx:]
+                name = re.sub(r'^\W+', '', name)
+                name = re.sub(r'\W+$', '', name)
+                return name
+
+        def guess_term(self):
+            m = self.command_match
+            a = self.transaction.amount
+            if m:
+                if m.group(1) and a == price_for_term('Current'):
+                    return app.config['TERM']
+
+                if m.group(2) and a == price_for_term('Lifetime'):
+                    return "Lifetime"
+
+    def entries(self):
+        transactions = list(self.transactions())
+        trans_ids = [t.id for t in transactions]
+
+        mapping = {}
+        memberships = Membership.query.filter(Membership.vipps_transaction_id.in_(trans_ids))
+        for m in memberships:
+            if m.vipps_transaction_id not in mapping:
+                mapping[m.vipps_transaction_id] = []
+            mapping[m.vipps_transaction_id].append(m)
+
+        return [self.Entry(t, mapping.get(t.id, [])) for t in transactions]
+
 
 @app.before_request
 def before_request():
@@ -264,6 +334,12 @@ def memberships_create():
         created_by=g.sess.id
     )
     membership.price = price_for_term(membership.term)
+
+    if 'vipps_transaction_id' in request.form and g.sess.can('vipps'):
+        tid = request.form['vipps_transaction_id'].strip()
+        if len(tid) == 0:
+            tid = None
+        membership.vipps_transaction_id = tid
 
     errors = []
     if membership.name.strip() == '':
@@ -417,6 +493,49 @@ def sessions_list():
     settled = Membership.count_dict(Membership.settled_by)
     sessions = Session.query.order_by(db.desc('created_at'))
     return render_template('sessions/list.html', sessions=sessions, created=created, settled=settled)
+
+@app.route('/vipps')
+def vipps_index():
+    reports = VippsReport.query.order_by(VippsReport.created_at.desc())
+    return render_template('vipps/index.html', reports=reports)
+
+@app.route('/vipps', methods=['POST'])
+def vipps_import():
+    file = request.files['file']
+    report = VippsReport(state="created")
+    db.session.add(report)
+    db.session.commit()
+    file.save(report.file_path())
+    report.state = "uploaded"
+    db.session.commit()
+    return redirect(url_for('vipps_index'))
+
+@app.route('/vipps/<id>')
+def vipps_show(id):
+    report = VippsReport.query.get(id)
+    return render_template('vipps/show.html', report=report)
+
+@app.route('/vipps/<id>', methods=['POST'])
+def vipps_process(id):
+    report = VippsReport.query.get(id)
+    names = request.form.getlist("name")
+    terms = request.form.getlist("term")
+    tids = request.form.getlist("transaction_id")
+
+    for name, term, tid in zip(names, terms, tids):
+        mem = Membership(
+            name=name,
+            term=term,
+            account="Vipps",
+            vipps_transaction_id=tid,
+            created_by=g.sess.id,
+            price=price_for_term(term)
+        )
+        db.session.add(mem)
+    
+    report.state = "resolved"
+    db.session.commit()
+    return redirect(url_for('vipps_index'))
 
 @app.errorhandler(404)
 def page_not_found(e):

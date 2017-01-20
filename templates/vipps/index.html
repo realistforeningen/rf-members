@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% set active_page = "vipps" %}
+{% block body %}
+
+<h2>Vipps import</h2>
+
+<h3>Upload new report</h3>
+
+<form method="post" enctype="multipart/form-data">
+  <input type="file" name="file" onchange="this.parentNode.submit()">
+</form>
+
+<h3>Exisiting reports</h3>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Uploaded at</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for report in reports %}
+      <tr class="{{ report.bootstrap_class() }}">
+        <td>{{ report.id }}</td>
+        <td>{{ report.created_at }}</td>
+        <td>
+          <a href="{{ url_for('vipps_show', id=report.id) }}"
+            class="btn btn-success">Process</a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+

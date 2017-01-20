@@ -65,11 +65,25 @@
       </label>
     </div>
     {% endif %}
+    {% if g.sess.can('vipps') %}
+    <div class="radio">
+      <label>
+        <input type="radio" name="account" value="Vipps" {{ 'checked' if membership.account == "Vipps" }}> Vipps
+      </label>
+    </div>
+    {% endif %}
   </div>
   {% if membership.term == "Lifetime" %}
     <div class="alert alert-info">
       <p><strong>NOTE:</strong> The member must contact Sekretær (sekretaer@rf.uio.no) directly in order to get a membership card (sølvkort).</p>
     </div>
+  {% endif %}
+
+  {% if g.sess.can('vipps') %}
+  <div class="form-group">
+    <label for="vippsTransactionID">Vipps Transaction ID</label>
+    <input type="text" class="form-control" id="vippsTransactionID" name="vipps_transaction_id">
+  </div>
   {% endif %}
   <button type="submit" class="btn btn-primary btn-lg active">Submit</button>
 </form>
