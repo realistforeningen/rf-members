@@ -15,6 +15,8 @@
       <th>Name</th>
       <th>NOK</th>
       <th>Message</th>
+      <th></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -29,12 +31,20 @@
             {% for m in entry.memberships %}
             <span class="text-success">{{ m.name }}</span>{% if loop.index > 1 %}, {% endif %}
             {% endfor %}
-          {% elif entry.guess_term() %}
+          {% elif entry.accuracy > 0 %}
             <input type="hidden" name="transaction_id" value="{{ entry.transaction.id }}">
-            <input type="hidden" name="term" value="{{ entry.guess_term() }}">
-            <input type="text" name="name" value="{{ entry.guess_name() }}" class="form-control">
+            <input type="hidden" name="term" value="{{ entry.term }}">
+            <input type="text" name="name" value="{{ entry.name }}" class="form-control">
           {% else %}
             <span class="text-warning">Unable to detect payment type</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if not entry.is_complete() and entry.accuracy > 0 %}
+            <input type="checkbox" name="accepted_transaction_id"
+              value="{{ entry.transaction.id }}"
+              {{ 'checked' if entry.accuracy == 2 }}
+            >
           {% endif %}
         </td>
       </tr>
@@ -42,7 +52,9 @@
   </tbody>
 </table>
 
-<button class="btn btn-primary">Add members and mark as resolved</button>
+<button class="btn btn-primary" name="state" value="resolved">Add members, mark as resolved</button>
+
+<button class="btn btn-secondary" name="state" value="pending">Add members, mark as pending</button>
 
 </form>
 

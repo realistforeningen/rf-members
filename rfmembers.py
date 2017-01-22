@@ -1,3 +1,5 @@
+# coding: utf-8
+
 import string
 from datetime import datetime, timedelta
 import time
@@ -171,34 +173,50 @@ class VippsReport(db.Model):
         if self.state == "resolved":
             return "success"
 
+        if self.state == "pending":
+            return "warning"
+
     class Entry:
         COMMAND_PATTERN = r'^([vh]\d+)|(evig|evil)'
 
         def __init__(self, transaction, memberships):
             self.transaction = transaction
             self.memberships = memberships
-            self.command_match = re.search(self.COMMAND_PATTERN, self.transaction.message, re.I)
+            self.accuracy = 0
+
+            self.parse_transaction()
 
         def is_complete(self):
             return len(self.memberships) > 0
 
-        def guess_name(self):
-            if self.command_match:
-                idx = self.command_match.end(0)
+        def parse_transaction(self):
+            amount = self.transaction.amount
+
+            if amount == price_for_term('Current'):
+                self.term = app.config['TERM']
+            elif amount == price_for_term('Lifetime'):
+                self.term = "Lifetime"
+            else:
+                return
+
+            self.accuracy = 1
+
+            cmd = re.search(self.COMMAND_PATTERN, self.transaction.message, re.I)
+
+            if cmd:
+                idx = cmd.end(0)
                 name = self.transaction.message[idx:]
-                name = re.sub(r'^\W+', '', name)
-                name = re.sub(r'\W+$', '', name)
-                return name
+                name = re.sub(ur'^[^\wæøåÆØÅ]+', '', name, re.U)
+                name = re.sub(r'[^\wæøåÆØÅ]+$', '', name, re.U)
+                self.name = name
 
-        def guess_term(self):
-            m = self.command_match
-            a = self.transaction.amount
-            if m:
-                if m.group(1) and a == price_for_term('Current'):
-                    return app.config['TERM']
+                if cmd.group(1) and amount == price_for_term('Current'):
+                    self.accuracy = 2
 
-                if m.group(2) and a == price_for_term('Lifetime'):
-                    return "Lifetime"
+                if cmd.group(2) and amount == price_for_term('Lifetime'):
+                    self.accuracy = 2
+            else:
+                self.name = "%s %s" % (self.transaction.first_name, self.transaction.last_name)
 
     def entries(self):
         transactions = list(self.transactions())
@@ -521,8 +539,12 @@ def vipps_process(id):
     names = request.form.getlist("name")
     terms = request.form.getlist("term")
     tids = request.form.getlist("transaction_id")
+    accepted_tids = request.form.getlist("accepted_transaction_id")
 
     for name, term, tid in zip(names, terms, tids):
+        if tid not in accepted_tids:
+            continue
+
         mem = Membership(
             name=name,
             term=term,
@@ -533,7 +555,7 @@ def vipps_process(id):
         )
         db.session.add(mem)
     
-    report.state = "resolved"
+    report.state = request.form["state"]
     db.session.commit()
     return redirect(url_for('vipps_index'))
 
