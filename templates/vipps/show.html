@@ -29,7 +29,7 @@
         <td>
           {% if entry.is_complete() %}
             {% for m in entry.memberships %}
-            <span class="text-success">{{ m.name }}</span>{% if loop.index > 1 %}, {% endif %}
+            {% if loop.index > 1 %}, {% endif %}<span class="text-success">{{ m.name }}</span>
             {% endfor %}
           {% elif entry.accuracy > 0 %}
             <input type="hidden" name="transaction_id" value="{{ entry.transaction.id }}">
