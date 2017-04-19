@@ -3,7 +3,7 @@
 <head>
   <title>RF members</title>
   {% assets output="assets/all.css",
-      "vendor/bootstrap-3.3.4.min.css",
+      "vendor/bootstrap-v4.0.0-alpha.6.min.css",
       "app.css"
   %}
     <link rel="stylesheet" href="{{ ASSET_URL }}">
@@ -19,65 +19,58 @@
 </head>
 <body>
   {% set active_page = active_page|default('index') -%}
-  <nav class="navbar navbar-default">
-    <div class="container-fluid">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <a class="navbar-brand" href="/">RF members</a>
-      </div>
+  <nav class="navbar navbar-light bg-faded navbar-toggleable-md mb-2">
+    <a class="navbar-brand" href="/">RF members</a>
 
-      {% if g.sess %}
-      <div class="">
-        <ul class="nav navbar-nav">
-          {% if g.sess.can('memberships_new') %}
-            <li{% if active_page == "add" %} class="active"{% endif %}>
-              <a href="{{ url_for('memberships_new')}}">Add member</a>
-            </li>
-          {% endif %}
-          {% if g.sess.can('memberships_list') %}
-            <li{% if active_page == "list" %} class="active"{% endif %}>
-              <a href="{{url_for('memberships_list')}}">List</a>
-            </li>
-          {% endif %}
-          {% if g.sess.can('settlement') %}
-            <li{% if active_page == "settle" %} class="active"{% endif %}>
-              <a href="{{ url_for('memberships_settle') }}">Settlement</a>
-            </li>
-          {% endif %}
-          {% if g.sess.can('reports') %}
-            <li{% if active_page == "reports" %} class="active"{% endif %}>
-              <a href="{{ url_for('reports') }}">Reports</a>
-            </li>
-          {% endif %}
-          {% if g.sess.can('sessions_list') %}
-            <li{% if active_page == "sessions_list" %} class="active"{% endif %}>
-              <a href="{{ url_for('sessions_list') }}">Sessions</a>
-            </li>
-          {% endif %}
-          {% if g.sess.can('vipps') %}
-            <li{% if active_page == "vipps" %} class="active"{% endif %}>
-              <a href="{{ url_for('vipps_index') }}">Vipps</a>
-            </li>
-          {% endif %}
-        </ul>
-        {% if g.sess %}
-        <form method="post" action="{{ url_for('sessions_destroy') }}" class="navbar-form navbar-right navbar-extra">
-          <p>
-            Logged in as <strong>{{ g.sess.user_name }}</strong>
-            ({{ g.sess.level }} - {{ g.sess.description }})
-          </p>
-          <button class="btn btn-success">Log out</button>
-        </form>
+    {% if g.sess %}
+    <div class="navbar-collapse">
+      <ul class="navbar-nav mr-auto">
+        {% if g.sess.can('memberships_new') %}
+          <li class="nav-item {% if active_page == "add" %}active{% endif %}">
+            <a class="nav-link" href="{{ url_for('memberships_new')}}">Add member</a>
+          </li>
         {% endif %}
-      </div><!-- /.navbar-collapse -->
+        {% if g.sess.can('memberships_list') %}
+          <li class="nav-item {% if active_page == "list" %}active{% endif %}">
+            <a class="nav-link" href="{{url_for('memberships_list')}}">List</a>
+          </li>
+        {% endif %}
+        {% if g.sess.can('settlement') %}
+          <li class="nav-item {% if active_page == "settle" %}active{% endif %}">
+            <a class="nav-link" href="{{ url_for('memberships_settle') }}">Settlement</a>
+          </li>
+        {% endif %}
+        {% if g.sess.can('reports') %}
+          <li class="nav-item {% if active_page == "reports" %}active{% endif %}">
+            <a class="nav-link" href="{{ url_for('reports') }}">Reports</a>
+          </li>
+        {% endif %}
+        {% if g.sess.can('sessions_list') %}
+          <li class="nav-item {% if active_page == "sessions_list" %}active{% endif %}">
+            <a class="nav-link" href="{{ url_for('sessions_list') }}">Sessions</a>
+          </li>
+        {% endif %}
+        {% if g.sess.can('vipps') %}
+          <li class="nav-item {% if active_page == "vipps" %}active{% endif %}">
+            <a class="nav-link" href="{{ url_for('vipps_index') }}">Vipps</a>
+          </li>
+        {% endif %}
+      </ul>
+      {% if g.sess %}
+      <form method="post" action="{{ url_for('sessions_destroy') }}" class="navbar-form navbar-right navbar-extra">
+        <p>
+          Logged in as <strong>{{ g.sess.user_name }}</strong>
+          ({{ g.sess.level }} - {{ g.sess.description }})
+        </p>
+        <button class="btn btn-success">Log out</button>
+      </form>
       {% endif %}
-    </div><!-- /.container-fluid -->
+    </div><!-- /.navbar-collapse -->
+    {% endif %}
   </nav>
 
-  <div class="container rf-main">
-    <div class="row">
-      {% block body %}{% endblock %}
-    </div>
+  <div class="container">
+    {% block body %}{% endblock %}
   </div>
 </body>
 </html>

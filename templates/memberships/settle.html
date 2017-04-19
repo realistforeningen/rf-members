@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 {% set active_page = "settle" %}
 {% block body %}
-<ul class="nav nav-tabs">
-  <li {{ 'class="active"'|safe if account == "Entrance" }}><a href="?account=Entrance">Entrance</a></li>
+<ul class="nav nav-tabs mb-2">
+  <li class="nav-item"><a class="nav-link {{ "active" if account == "Entrance" }}" href="?account=Entrance">Entrance</a></li>
   {% if g.sess.can('settlement_all') %}
-  <li {{ 'class="active"'|safe if account == "Wristband" }}><a href="?account=Wristband">Wristband</a></li>
-  <li {{ 'class="active"'|safe if account == "BankAccount" }}><a href="?account=BankAccount">Bank Account</a></li>
+  <li class="nav-item"><a class="nav-link {{ "active" if account == "Wristband" }}" href="?account=Wristband">Wristband</a></li>
+  <li class="nav-item"><a class="nav-link {{ "active" if account == "BankAccount" }}" href="?account=BankAccount">Bank Account</a></li>
   {% endif %}
 </ul>
 
@@ -50,7 +50,7 @@
 </div>
 {% else %}
 <form method="post">
-  <div class="alert alert-warning">
+  <div class="alert alert-warning pb-0">
     <p>Only proceed <em>after</em> you've counted the money and written the settlement form.</p>
   </div>
   <input type="hidden" name="max_id" value="{{ max_id }}">

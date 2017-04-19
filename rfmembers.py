@@ -368,7 +368,7 @@ def memberships_create():
 
     db.session.add(membership)
     db.session.commit()
-    return redirect(url_for('memberships_new', term=membership.term))
+    return redirect(url_for('memberships_new', term=membership.term) + '#rf-membership-anchor')
 
 @app.route('/memberships/<id>/edit')
 def memberships_edit(id):

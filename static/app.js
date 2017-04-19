@@ -20,6 +20,13 @@ $(function() {
   function search(query) {
     var id = ++currRequest;
 
+    if (query.length == 0) {
+      currResponse = id;
+      container.empty();
+      header.text(defaultHeader);
+      return;
+    }
+
     var xhr = $.ajax('/memberships/search', {
       data: { q: query }
     });
@@ -32,11 +39,7 @@ $(function() {
 
       currResponse = id;
       container.html(xhr.responseText);
-      if (query) {
-        header.text("Search results for " + query);
-      } else {
-        header.text(defaultHeader);
-      }
+      header.text("Search results for " + query);
     });
   }
   

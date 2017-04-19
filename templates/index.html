@@ -3,14 +3,14 @@
 
 <h2>What do you want to do today?</h2>
 <p>
-  <a href="{{ url_for('sessions_new', level='Funk', description='Friday pub') }}" class="btn btn-default">Friday pub</a>
-  <a href="{{ url_for('sessions_new', level='SM', description='Settlement') }}" class="btn btn-default">Settlement</a>
+  <a href="{{ url_for('sessions_new', level='Funk', description='Friday pub') }}" class="btn btn-secondary">Friday pub</a>
+  <a href="{{ url_for('sessions_new', level='SM', description='Settlement') }}" class="btn btn-secondary">Settlement</a>
   {% if config.ENABLE_WRISTBAND %}
-  <a href="{{ url_for('sessions_new', level='Funk', description='Redeem') }}" class="btn btn-default">Redeem membership</a>
+  <a href="{{ url_for('sessions_new', level='Funk', description='Redeem') }}" class="btn btn-secondary">Redeem membership</a>
   {% endif %}
-  <a href="{{ url_for('sessions_new', level='Admin', description='Silver') }}" class="btn btn-default">Silver membership</a>
-  <a href="{{ url_for('sessions_new', level='Admin', description='Admin') }}" class="btn btn-default">Admin</a>
-  <a href="{{ url_for('sessions_new', level='Superadmin', description='Superadmin') }}" class="btn btn-default">Superadmin</a>
+  <a href="{{ url_for('sessions_new', level='Admin', description='Silver') }}" class="btn btn-secondary">Silver membership</a>
+  <a href="{{ url_for('sessions_new', level='Admin', description='Admin') }}" class="btn btn-secondary">Admin</a>
+  <a href="{{ url_for('sessions_new', level='Superadmin', description='Superadmin') }}" class="btn btn-secondary">Superadmin</a>
 </p>
 {% endblock %}
 
