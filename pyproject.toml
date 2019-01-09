@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "rf-members"
+version = "0.1"
+authors = ['Magnus Holm <judofyr@gmail.com>']
+
+[tool.poetry.dependencies]
+Flask = "=0.11.0"
+pytz = "^2018.9"
+SQLAlchemy = "0.9.9"
+Flask-SQLAlchemy = "^2.3"
+Flask-Assets = "^0.12.0"
+openpyxl = "2.4.1"
+
