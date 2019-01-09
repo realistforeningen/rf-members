@@ -206,7 +206,7 @@ class VippsReport(db.Model):
             if cmd:
                 idx = cmd.end(0)
                 name = self.transaction.message[idx:]
-                name = re.sub(ur'^[^\wæøåÆØÅ]+', '', name, re.U)
+                name = re.sub(r'^[^\wæøåÆØÅ]+', '', name, re.U)
                 name = re.sub(r'[^\wæøåÆØÅ]+$', '', name, re.U)
                 self.name = name
 
