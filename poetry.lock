@@ -139,8 +139,11 @@ optional = false
 python-versions = "*"
 version = "0.14.1"
 
+[extras]
+production = ["gunicorn"]
+
 [metadata]
-content-hash = "b50f0692aab0d394a96e5322e130e16058fe9d4017ff80c27dec3948a915b94d"
+content-hash = "de4f3b628c78414bb3788795ac21d746875e0f2f70c2cccd938b8a546c5c87ad"
 python-versions = "*"
 
 [metadata.hashes]
