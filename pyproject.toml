@@ -10,4 +10,5 @@ SQLAlchemy = "0.9.9"
 Flask-SQLAlchemy = "^2.3"
 Flask-Assets = "^0.12.0"
 openpyxl = "2.4.1"
+gunicorn = {version = "^19.9",optional = true,extras = ["production"]}
 
