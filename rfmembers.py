@@ -75,7 +75,7 @@ class Membership(db.Model):
     def is_free(self):
         return self.price == 0
 
-    ALPHABET = "".join(str(x) for x in xrange(10))
+    ALPHABET = "".join(str(x) for x in range(10))
     ALPHABET += string.ascii_uppercase
 
     ALPHABET = ALPHABET\
