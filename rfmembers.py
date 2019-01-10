@@ -39,7 +39,8 @@ app.config.from_pyfile(os.getenv('CONFIG_FILE', 'production.cfg'), silent=True)
 tz = timezone(app.config['TIMEZONE'])
 
 assets = Environment(app)
-assets.cache = os.getenv('WEBASSETS_CACHE', True)
+if 'WEBASSETS_DIR' in os.environ:
+    assets.directory = os.getenv('WEBASSETS_DIR')
 
 db = SQLAlchemy(app)
 
