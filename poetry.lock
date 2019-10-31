@@ -16,17 +16,17 @@ version = "1.0.1"
 
 [[package]]
 category = "main"
-description = "A microframework based on Werkzeug, Jinja2 and good intentions"
+description = "A simple framework for building complex web applications."
 name = "flask"
 optional = false
 python-versions = "*"
-version = "0.11"
+version = "1.0"
 
 [package.dependencies]
-Jinja2 = ">=2.4"
-Werkzeug = ">=0.7"
-click = ">=2.0"
-itsdangerous = ">=0.21"
+Jinja2 = ">=2.10"
+Werkzeug = ">=0.14"
+click = ">=5.1"
+itsdangerous = ">=0.24"
 
 [[package]]
 category = "main"
@@ -143,13 +143,13 @@ version = "0.14.1"
 production = ["gunicorn"]
 
 [metadata]
-content-hash = "de4f3b628c78414bb3788795ac21d746875e0f2f70c2cccd938b8a546c5c87ad"
+content-hash = "035f9b3f181c42aa32dfee2e418a6c3e20a7e8ee2ae2cdae697337802a4d5f2c"
 python-versions = "*"
 
 [metadata.hashes]
 click = ["2335065e6395b9e67ca716de5f7526736bfa6ceead690adf616d925bdc622b13", "5b94b49521f6456670fdb30cd82a4eca9412788a93fa6dd6df72c94d5a8ff2d7"]
 et-xmlfile = ["614d9722d572f6246302c4491846d2c393c199cfa4edc9af593437691683335b"]
-flask = ["29a7405a7f0de178232fe48cd9b2a2403083bf03bd34eabe12168863d4cdb493", "6b221aef9684a92209628c8ffeba35fc60a0c89e4424662809e7da6035f257a7"]
+flask = ["7fab1062d11dd0038434e790d18c5b9133fd9e6b7257d707c4578ccc1e38b67c", "b1883637bbee4dc7bc98d900792d0a304d609fce0f5bd9ca91d1b6457e5918dd"]
 flask-assets = ["6031527b89fb3509d1581d932affa5a79dd348cfffb58d0aef99a43461d47847"]
 flask-sqlalchemy = ["3bc0fac969dd8c0ace01b32060f0c729565293302f0c4269beed154b46bec50b", "5971b9852b5888655f11db634e87725a9031e170f37c0ce7851cf83497f56e53"]
 gunicorn = ["aa8e0b40b4157b36a5df5e599f45c9c76d6af43845ba3b3b0efe2c70473c2471", "fa2662097c66f920f53f70621c6c58ca4a3c4d3434205e608e121b5b3b71f4f3"]
